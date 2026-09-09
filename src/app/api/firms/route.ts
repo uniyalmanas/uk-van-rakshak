@@ -23,7 +23,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const divisionId = searchParams.get("division") || "all_uk";
   const days = Math.min(Math.max(parseInt(searchParams.get("days") || "3", 10), 1), 10);
-  const apiKey = process.env.NASA_FIRMS_MAP_KEY;
+  const apiKey =
+    process.env.NASA_FIRMS_MAP_KEY || "ec1d195941eba4f152042bb19e8d9090";
 
   // Bounding box for Uttarakhand: [west: 77.5, south: 28.7, east: 81.0, north: 31.5]
   const bbox = "77.5,28.7,81.0,31.5";

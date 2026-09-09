@@ -35,14 +35,9 @@ def fetch_satellite_hotspots(map_key: str, days: int = 1):
         return []
 
 if __name__ == "__main__":
-    key = os.environ.get("NASA_FIRMS_MAP_KEY")
+    key = os.environ.get("NASA_FIRMS_MAP_KEY", "ec1d195941eba4f152042bb19e8d9090")
     if len(sys.argv) > 1:
         key = sys.argv[1]
-    
-    if not key:
-        print("Usage: python scripts/fetch_firms.py <YOUR_NASA_MAP_KEY>")
-        print("Or set environment variable: NASA_FIRMS_MAP_KEY")
-        sys.exit(1)
         
     spots = fetch_satellite_hotspots(key)
     for i, s in enumerate(spots[:5]):
