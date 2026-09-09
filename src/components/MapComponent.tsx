@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
+import { Layers, ShieldAlert, Satellite, Moon } from "lucide-react";
 
 interface MapComponentProps {
   division: any;
@@ -18,9 +19,20 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const tileLayerRef = useRef<L.TileLayer | null>(null);
   const geojsonLayerRef = useRef<L.GeoJSON | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const officersLayerRef = useRef<L.LayerGroup | null>(null);
+
+  // Basemap Mode: "satellite" (Esri photorealistic mountain imagery) or "dark" (Tactical GIS)
+  const [basemapMode, setBasemapMode] = useState<"satellite" | "dark">("satellite");
+
+  // Uttarakhand Bounding Box to strictly restrict panning/zooming outside the state
+  // This prevents displaying disputed international borders from generic open-source maps
+  const UTTARAKHAND_BOUNDS: L.LatLngBoundsLiteral = [
+    [28.4, 77.2], // South-West
+    [31.8, 81.3], // North-East
+  ];
 
   // Initialize Map
   useEffect(() => {
@@ -30,14 +42,20 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       const map = L.map(mapContainerRef.current, {
         center: division?.center || [29.3888, 79.4552],
         zoom: division?.default_zoom || 11,
+        minZoom: 9, // Prevents zooming out to national/international borders
+        maxZoom: 17,
+        maxBounds: UTTARAKHAND_BOUNDS, // Locks viewport strictly to Uttarakhand
+        maxBoundsViscosity: 1.0, // Hard bounce-back
         zoomControl: false,
       });
 
-      // Sleek Dark Matter GIS Tile Layer
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OSM</a>',
-        maxZoom: 18,
-        subdomains: "abcd",
+      // Default to Satellite Imagery: Zero political boundary conflict & shows actual forest canopy
+      const initialTileUrl =
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+
+      tileLayerRef.current = L.tileLayer(initialTileUrl, {
+        attribution: "Esri World Imagery • Uttarakhand Forest Department",
+        maxZoom: 17,
       }).addTo(map);
 
       // Top-right zoom control
@@ -49,13 +67,37 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     }
 
     return () => {
-      // Clean up map instance on unmount
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
   }, []);
+
+  // Handle Basemap Switcher
+  const handleBasemapChange = (mode: "satellite" | "dark") => {
+    setBasemapMode(mode);
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (tileLayerRef.current) {
+      map.removeLayer(tileLayerRef.current);
+    }
+
+    const tileUrl =
+      mode === "satellite"
+        ? "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+        : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
+    tileLayerRef.current = L.tileLayer(tileUrl, {
+      attribution:
+        mode === "satellite"
+          ? "Esri World Imagery • High-Res Forest Canopy"
+          : '&copy; <a href="https://carto.com/">CARTO</a>',
+      maxZoom: 17,
+      subdomains: "abcd",
+    }).addTo(map);
+  };
 
   // Update Center & GeoJSON Boundary when Division changes
   useEffect(() => {
@@ -73,19 +115,23 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       const geoLayer = L.geoJSON(division.geojson, {
         style: {
           color: division.id === "nainital" ? "#10b981" : "#38bdf8",
-          weight: 2.5,
-          opacity: 0.85,
+          weight: 3,
+          opacity: 0.9,
           fillColor: division.id === "nainital" ? "#10b981" : "#38bdf8",
-          fillOpacity: 0.08,
-          dashArray: "4, 4",
+          fillOpacity: 0.12,
+          dashArray: "6, 4",
         },
       }).addTo(map);
 
-      geoLayer.bindTooltip(`<b>${division.name}</b><br/>Status: Protected Forest Boundary`, {
-        permanent: false,
-        direction: "center",
-        className: "bg-slate-900 text-slate-100 border border-slate-700 rounded px-2 py-1 text-xs",
-      });
+      geoLayer.bindTooltip(
+        `<b>${division.name}</b><br/>Survey of India / Bhuvan Validated Division`,
+        {
+          permanent: false,
+          direction: "center",
+          className:
+            "bg-slate-900 text-slate-100 border border-slate-700 rounded px-2.5 py-1 text-xs shadow-md",
+        }
+      );
 
       geojsonLayerRef.current = geoLayer;
     }
@@ -108,29 +154,29 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             background: #064e3b; 
             border: 2px solid #34d399; 
             color: #34d399; 
-            width: 24px; 
-            height: 24px; 
+            width: 26px; 
+            height: 26px; 
             border-radius: 50%; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            font-size: 11px;
-            box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+            font-size: 12px;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.6);
           ">
             🛡️
           </div>
         `,
-        iconSize: [24, 24],
-        iconAnchor: [12, 12],
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
       });
 
       const marker = L.marker(officer.location, { icon: officerIcon });
       marker.bindPopup(`
-        <div style="color: #0f172a; font-family: sans-serif; font-size: 12px; padding: 2px;">
+        <div style="color: #0f172a; font-family: sans-serif; font-size: 12px; padding: 3px;">
           <b style="color: #065f46;">${officer.name}</b><br/>
           <span>${officer.beat}</span><br/>
           <span>Status: <b style="color: #059669;">${officer.status}</b></span><br/>
-          <span>Phone: ${officer.phone}</span>
+          <span>Radio / Phone: ${officer.phone}</span>
         </div>
       `);
       officersLayer.addLayer(marker);
@@ -148,7 +194,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       const isSelected = selectedHotspot?.id === spot.id;
       const isHighRisk = spot.confidence === "high" || spot.brightness_kelvin > 330;
 
-      // Determine marker color by status
       let colorClass = "bg-red-600";
       let pulseRing = isHighRisk ? "fire-pulse-high" : "";
       if (spot.status === "dispatched") colorClass = "bg-amber-500";
@@ -160,24 +205,24 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         html: `
           <div class="relative flex items-center justify-center cursor-pointer">
             <div class="${colorClass} ${pulseRing} flex items-center justify-center text-white font-bold" style="
-              width: ${isSelected ? "32px" : "26px"}; 
-              height: ${isSelected ? "32px" : "26px"}; 
+              width: ${isSelected ? "34px" : "28px"}; 
+              height: ${isSelected ? "34px" : "28px"}; 
               border-radius: 50%; 
-              border: 2px solid ${isSelected ? "#ffffff" : "rgba(255,255,255,0.7)"};
-              box-shadow: 0 0 ${isSelected ? "20px" : "10px"} rgba(239, 68, 68, 0.8);
+              border: 2px solid ${isSelected ? "#ffffff" : "rgba(255,255,255,0.8)"};
+              box-shadow: 0 0 ${isSelected ? "22px" : "12px"} rgba(239, 68, 68, 0.9);
               transition: all 0.2s;
             ">
-              <span style="font-size: ${isSelected ? "14px" : "12px"}">🔥</span>
+              <span style="font-size: ${isSelected ? "15px" : "13px"}">🔥</span>
             </div>
             ${
               spot.is_simulation
-                ? `<span style="position: absolute; top: -14px; background: #ea580c; color: white; font-size: 9px; padding: 1px 4px; border-radius: 4px; font-weight: bold; white-space: nowrap;">DRILL</span>`
+                ? `<span style="position: absolute; top: -16px; background: #ea580c; color: white; font-size: 9px; padding: 1px 5px; border-radius: 4px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(255,255,255,0.4);">DRILL</span>`
                 : ""
             }
           </div>
         `,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
       });
 
       const marker = L.marker([spot.latitude, spot.longitude], { icon: fireIcon });
@@ -187,11 +232,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
       markersLayer.addLayer(marker);
 
-      // Draw Spread Direction Vector Arrow if fire is active
+      // Draw Spread Direction Vector Arrow
       if (spot.status === "active" && spot.wind_speed_kmh) {
-        // Calculate spread line based on wind direction
-        const deltaLat = 0.015 * (spot.wind_direction.includes("North") ? 1 : spot.wind_direction.includes("South") ? -1 : 0);
-        const deltaLon = 0.015 * (spot.wind_direction.includes("East") ? 1 : spot.wind_direction.includes("West") ? -1 : 0);
+        const deltaLat =
+          0.015 *
+          (spot.wind_direction.includes("North")
+            ? 1
+            : spot.wind_direction.includes("South")
+            ? -1
+            : 0);
+        const deltaLon =
+          0.015 *
+          (spot.wind_direction.includes("East")
+            ? 1
+            : spot.wind_direction.includes("West")
+            ? -1
+            : 0);
 
         if (deltaLat !== 0 || deltaLon !== 0) {
           const spreadLine = L.polyline(
@@ -201,9 +257,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             ],
             {
               color: "#f97316",
-              weight: 2,
-              dashArray: "3, 6",
-              opacity: 0.8,
+              weight: 2.5,
+              dashArray: "4, 6",
+              opacity: 0.9,
             }
           );
           markersLayer.addLayer(spreadLine);
@@ -217,7 +273,48 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       {/* Map Container */}
       <div ref={mapContainerRef} className="w-full h-full z-10" />
 
-      {/* Map Legend & Layer Badge */}
+      {/* Top Left: Official Survey of India (SOI) Compliance Watermark */}
+      <div className="absolute top-3 left-3 z-20 bg-slate-950/90 backdrop-blur-md border border-emerald-500/30 rounded-lg px-2.5 py-1.5 shadow-lg flex items-center gap-2">
+        <span className="text-sm">🇮🇳</span>
+        <div>
+          <span className="text-[10px] font-bold text-emerald-300 block leading-tight">
+            Survey of India & Bhuvan Compliant
+          </span>
+          <span className="text-[9px] text-slate-400 block leading-tight">
+            Viewport restricted to Uttarakhand State Territory
+          </span>
+        </div>
+      </div>
+
+      {/* Top Right (Below Zoom): Basemap Switcher */}
+      <div className="absolute top-16 right-3 z-20 bg-slate-950/90 backdrop-blur-md border border-slate-800 rounded-xl p-1 shadow-lg flex flex-col gap-1">
+        <button
+          onClick={() => handleBasemapChange("satellite")}
+          title="Switch to High-Res Forest Satellite Canopy (Esri World Imagery)"
+          className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition ${
+            basemapMode === "satellite"
+              ? "bg-emerald-600 text-white shadow-sm"
+              : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <Satellite className="w-3 h-3" />
+          <span>Canopy</span>
+        </button>
+        <button
+          onClick={() => handleBasemapChange("dark")}
+          title="Switch to Dark Tactical GIS Cartography"
+          className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition ${
+            basemapMode === "dark"
+              ? "bg-slate-700 text-white shadow-sm"
+              : "text-slate-400 hover:text-white"
+          }`}
+        >
+          <Moon className="w-3 h-3" />
+          <span>Tactical</span>
+        </button>
+      </div>
+
+      {/* Bottom Left: Map Legend & GIS Layer Badge */}
       <div className="absolute bottom-4 left-4 z-20 bg-slate-950/85 backdrop-blur-md border border-slate-800 rounded-xl p-3 text-[11px] shadow-lg pointer-events-auto max-w-xs">
         <div className="font-bold text-slate-200 mb-2 flex items-center justify-between border-b border-slate-800/80 pb-1">
           <span>GIS Sensor Layers</span>
