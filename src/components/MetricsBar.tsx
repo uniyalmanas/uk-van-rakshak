@@ -99,7 +99,7 @@ export const MetricsBar: React.FC<MetricsBarProps> = ({
         </div>
         <div className="mt-1.5 flex items-baseline gap-1.5">
           <span className="text-sm font-semibold text-slate-900 dark:text-white">
-            INSAT-3DR + VIIRS
+            VIIRS 375m + CartoDEM
           </span>
         </div>
         <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
@@ -107,7 +107,7 @@ export const MetricsBar: React.FC<MetricsBarProps> = ({
           <span className="truncate">
             {satelliteFeedInfo?.isLive
               ? (isHi ? "नासा FIRMS सक्रिय (लाइव फ़ीड)" : "NASA FIRMS Live Connected")
-              : (isHi ? "15 मिनट जियोस्टेशनरी स्कैन" : "15-min Rapid Scan (MOSDAC)")}
+              : (isHi ? "उपग्रह लिंक सक्रिय" : "Satellite Link Active")}
           </span>
         </div>
       </div>

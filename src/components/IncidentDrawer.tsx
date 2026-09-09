@@ -171,7 +171,7 @@ export const IncidentDrawer: React.FC<IncidentDrawerProps> = ({
                 {isHi ? "उपग्रह पेलोड" : "Satellite Payload"}
               </span>
               <span className="font-medium text-emerald-700 dark:text-emerald-400">
-                ISRO INSAT-3DR & Bhuvan
+                {hotspot.satellite || "NASA VIIRS S-NPP (375m)"}
               </span>
             </div>
             <div>

@@ -317,20 +317,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         className="w-full h-full z-10"
       />
 
-      {/* Top Left: ISRO Bhuvan & MOSDAC Compliance Badge */}
+      {/* Top Left: NASA VIIRS & ISRO CartoDEM Telemetry Badge */}
       <div className="absolute top-3 left-3 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/40 dark:border-emerald-500/30 rounded-lg px-2.5 py-1.5 shadow-sm flex items-center gap-2 pointer-events-auto">
-        <span className="text-sm">🇮🇳</span>
+        <span className="text-sm">🛰️</span>
         <div>
           <div className="flex items-center gap-1.5">
             <span className="text-[10.5px] font-bold text-emerald-800 dark:text-emerald-400 leading-none">
-              {isHi ? "इसरो भुवन एवं मोसडैक आधारित" : "ISRO Bhuvan & MOSDAC Native"}
+              {isHi
+                ? "नासा VIIRS (375m) • इसरो CartoDEM"
+                : "NASA VIIRS 375m • ISRO CartoDEM"}
             </span>
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
           </div>
           <span className="text-[9.5px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">
             {isHi
-              ? "INSAT-3DR जियोस्टेशनरी (15-मिनट) • CartoDEM 30m ढलान मॉडल"
-              : "INSAT-3DR Rapid Geostationary (15-min) • CartoDEM 30m"}
+              ? "लाइव NRT उपग्रह स्कैन • सर्वे ऑफ इंडिया (SOI) सीमा अनुरूप"
+              : "Live NRT Satellite Detection • Survey of India (SOI) Compliant"}
           </span>
         </div>
       </div>
