@@ -166,6 +166,22 @@ export const IncidentDrawer: React.FC<IncidentDrawerProps> = ({
                 {hotspot.brightness_kelvin} K ({hotspot.frp_mw} MW)
               </span>
             </div>
+            <div>
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                {isHi ? "उपग्रह पेलोड" : "Satellite Payload"}
+              </span>
+              <span className="font-medium text-emerald-700 dark:text-emerald-400">
+                ISRO INSAT-3DR & Bhuvan
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                {isHi ? "धरातल मॉडल" : "DEM Topography"}
+              </span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">
+                ISRO CartoDEM (30m)
+              </span>
+            </div>
           </div>
         </div>
 

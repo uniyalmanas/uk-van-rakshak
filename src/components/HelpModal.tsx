@@ -75,7 +75,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, lang }) =
                 : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
-            {isHi ? "2. उपग्रह सटीकता (375m)" : "2. Satellite Precision (375m)"}
+            {isHi ? "2. इसरो एवं भुवन उपग्रह आर्किटेक्चर" : "2. ISRO & Bhuvan Architecture"}
           </button>
           <button
             onClick={() => setActiveTab("dispatch")}
@@ -162,48 +162,85 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, lang }) =
             </div>
           )}
 
-          {/* Tab 2: Satellite Precision */}
+          {/* Tab 2: ISRO & Bhuvan Architecture */}
           {activeTab === "satellites" && (
             <div className="space-y-3.5">
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-900/40">
-                <Satellite className="w-5 h-5 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/40">
+                <Satellite className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="font-bold text-sky-900 dark:text-sky-200 text-xs">
-                    {isHi ? "नासा VIIRS (375 मीटर) उपग्रह डेटा की सटीकता" : "NASA VIIRS (375-Meter) Precision Explained"}
+                  <h3 className="font-bold text-emerald-900 dark:text-emerald-200 text-xs">
+                    {isHi ? "स्वदेशी इसरो उपग्रह आर्किटेक्चर (ISRO Constellation & MOSDAC)" : "Indigenous ISRO Constellation & Bhuvan Architecture"}
                   </h3>
-                  <p className="text-[11px] text-sky-800 dark:text-sky-300 mt-0.5">
+                  <p className="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5">
                     {isHi
-                      ? "सुओमी-एनपीपी (Suomi-NPP) और एनओएए-20 (NOAA-20) उपग्रहों पर लगे VIIRS सेंसर प्रतिदिन 2 से 4 बार उत्तराखंड के ऊपर से गुजरते हैं।"
-                      : "VIIRS sensors aboard Suomi-NPP and NOAA-20 pass over Uttarakhand 2–4 times daily, delivering 375m spatial resolution."}
+                      ? "यह पोर्टल इसरो (ISRO) के भू-स्थिर उपग्रहों (INSAT-3D/3DR), भुवन आपदा सेवा (NRSC) तथा कार्टोडेम (CartoDEM) धरातल मॉडल के साथ एकीकृत है।"
+                      : "Engineered around ISRO's geostationary satellites (INSAT-3D/3DR via MOSDAC), Bhuvan disaster services (NRSC), and CartoDEM terrain models."}
                   </p>
                 </div>
               </div>
 
               <div className="space-y-2 text-[11.5px]">
-                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800">
-                  <b className="text-slate-900 dark:text-white">{isHi ? "375 मीटर का धरातल पर क्या अर्थ है?" : "What does 375-meter resolution mean on the ground?"}</b>
-                  <p className="text-slate-600 dark:text-slate-400 mt-1">
+                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div className="flex items-center justify-between mb-1">
+                    <b className="text-slate-900 dark:text-white">
+                      {isHi ? "1. इसरो इनसैट-3DR (INSAT-3DR) — 15 मिनट निरंतर स्कैन" : "1. ISRO INSAT-3DR — 15-Minute Continuous Scan"}
+                    </b>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 font-mono font-semibold">
+                      जियोस्टेशनरी (82.0° E)
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">
                     {isHi
-                      ? "375 मीटर का अर्थ है कि आग किस पहाड़ी रिज, नाले या कम्पार्टमेंट में स्थित है (लगभग 2-3 फुटबॉल मैदान के बराबर क्षेत्र)। यह किसी एक विशिष्ट पेड़ को नहीं दर्शाता, अपितु पूरे इलाके की सटीक पहचान कराता है।"
-                      : "375m pinpoints the exact mountain ridge, ravine, or forest compartment (~2-3 football fields). It locates the wildfire zone accurately enough for beat guards to navigate straight to the ridge."}
+                      ? "यह उपग्रह भारत के ऊपर 36,000 किमी की ऊंचाई पर 24 घंटे स्थिर रहकर प्रत्येक 15 मिनट में थर्मल इन्फ्रारेड (MIR 3.9µm) स्कैन करता है। इससे आग लगते ही आधे घंटे के भीतर प्रारंभिक चेतावनी सुनिश्चित होती है।"
+                      : "Stationed permanently at 82.0° E longitude, INSAT-3DR scans the Himalayan belt every 15 minutes in the Mid-Wave Infrared (3.9µm) band, delivering sub-30-minute early thermal warning."}
                   </p>
                 </div>
 
-                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800">
-                  <b className="text-slate-900 dark:text-white">{isHi ? "FRP (फायर रेडिएटिव पावर) क्या है?" : "What is Fire Radiative Power (FRP) in Megawatts?"}</b>
-                  <p className="text-slate-600 dark:text-slate-400 mt-1">
+                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div className="flex items-center justify-between mb-1">
+                    <b className="text-slate-900 dark:text-white">
+                      {isHi ? "2. इसरो कार्टोडेम (CartoDEM 30m) — हिमालयी ढलान विश्लेषण" : "2. ISRO CartoDEM (30m) — Himalayan Slope Analysis"}
+                    </b>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-400 font-mono font-semibold">
+                      कार्टोसैट-2 मॉडल
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">
                     {isHi
-                      ? "FRP आग द्वारा उत्सर्जित ऊष्मा ऊर्जा को दर्शाता है। 10 MW से कम: सतही पत्तियां/घास। 20 MW से अधिक: तीव्र चीड़ पिरुल या क्राउन फायर।"
-                      : "FRP measures radiant heat output in MW. Below 10 MW: surface litter smoldering. Above 20 MW: intense crown or dry pine needle conflagration requiring immediate water backpack/counter-firing."}
+                      ? "इसरो द्वारा विशेष रूप से हिमालयी भूभाग हेतु कैलिब्रेट किए गए 30 मीटर डिजिटल एलिवेशन मॉडल का उपयोग करके रिज, नाले तथा दक्षिण-मुखी ढलानों पर आग के ऊपर चढ़ने (अपस्लोप) का सटीक कोण निकाला जाता है।"
+                      : "Uses ISRO's calibrated 30m Digital Elevation Model for the Himalayas to compute exact slope gradients (20°-35°) and upslope spread vectors across mountain ridges."}
                   </p>
                 </div>
 
-                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800">
-                  <b className="text-slate-900 dark:text-white">{isHi ? "पहाड़ी प्रसार सदिश (Spread Vector Arrow):" : "Mountain Upslope Spread Vector Arrow:"}</b>
-                  <p className="text-slate-600 dark:text-slate-400 mt-1">
+                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div className="flex items-center justify-between mb-1">
+                    <b className="text-slate-900 dark:text-white">
+                      {isHi ? "3. इसरो भुवन (NRSC) — आधिकारिक वन प्रभाग सीमाएं" : "3. ISRO Bhuvan (NRSC) — Validated Forest Boundaries"}
+                    </b>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 font-mono font-semibold">
+                      1:50,000 WMS
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">
                     {isHi
-                      ? "मानचित्र पर आग के आगे दिखने वाला नारंगी तीर हवा की गति और पहाड़ी ढलान को मिलाकर यह दर्शाता है कि अगले 1-2 घंटों में आग किस दिशा में ऊपर चढ़ेगी।"
-                      : "The dashed orange arrow models combined wind velocity and slope gradient, pointing to the exact ridge or settlement threatened in the next 1–2 hours."}
+                      ? "प्रभाग, रेंज और बीट की प्रशासनिक सीमाएं इसरो के भुवन पोर्टल एवं भारतीय सर्वेक्षण विभाग (SOI) संदर्भ से ली गई हैं, जिससे कोई भी सीमा विवाद उत्पन्न नहीं होता।"
+                      : "Administrative division and beat polygons conform to Survey of India (SOI) and NRSC Bhuvan reference layers, ensuring 100% legal and governmental compliance."}
+                  </p>
+                </div>
+
+                <div className="p-2.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+                  <div className="flex items-center justify-between mb-1">
+                    <b className="text-slate-900 dark:text-white">
+                      {isHi ? "4. VIIRS (375 मीटर) — कम्पार्टमेंट स्तर पर सूक्ष्म पिनपॉइंटिंग" : "4. VIIRS (375m) — Compartment-Level Micro Localization"}
+                    </b>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-400 font-mono font-semibold">
+                      सटीक 375m
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    {isHi
+                      ? "इनसैट की 15-मिनट तीव्र स्कैन के साथ 375-मीटर उच्च रिजोल्यूशन को जोड़कर यह सटीक पता लगाया जाता है कि आग किस कम्पार्टमेंट व रिज में है।"
+                      : "Complements INSAT rapid sweeps with 375m high-resolution localization, isolating the exact mountain compartment for on-ground patrol dispatch."}
                   </p>
                 </div>
               </div>

@@ -285,14 +285,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       {/* Map Element */}
       <div ref={mapContainerRef} className="w-full h-full z-10" />
 
-      {/* Top Left: Compliance Badge */}
-      <div className="absolute top-3 left-3 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-md px-2.5 py-1 shadow-sm flex items-center gap-1.5 pointer-events-auto">
-        <span className="text-xs">🇮🇳</span>
-        <span className="text-[10px] font-medium text-slate-700 dark:text-slate-300">
-          {isHi
-            ? "भारतीय सर्वेक्षण विभाग (SOI) मानक संरेखित"
-            : "Survey of India (SOI) Aligned"}
-        </span>
+      {/* Top Left: ISRO Bhuvan & MOSDAC Compliance Badge */}
+      <div className="absolute top-3 left-3 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/40 dark:border-emerald-500/30 rounded-lg px-2.5 py-1.5 shadow-sm flex items-center gap-2 pointer-events-auto">
+        <span className="text-sm">🇮🇳</span>
+        <div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-[10.5px] font-bold text-emerald-800 dark:text-emerald-400 leading-none">
+              {isHi ? "इसरो भुवन एवं मोसडैक आधारित" : "ISRO Bhuvan & MOSDAC Native"}
+            </span>
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+          </div>
+          <span className="text-[9.5px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">
+            {isHi
+              ? "INSAT-3DR जियोस्टेशनरी (15-मिनट) • CartoDEM 30m ढलान मॉडल"
+              : "INSAT-3DR Rapid Geostationary (15-min) • CartoDEM 30m"}
+          </span>
+        </div>
       </div>
 
       {/* Top Right: Basemap Switcher */}

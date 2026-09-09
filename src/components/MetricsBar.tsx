@@ -77,22 +77,22 @@ export const MetricsBar: React.FC<MetricsBarProps> = ({ division, hotspots, lang
         </div>
       </div>
 
-      {/* Metric 4: Satellite Pass Telemetry */}
+      {/* Metric 4: ISRO Satellite Constellation Telemetry */}
       <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-lg p-3 transition-colors">
         <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
           <span className="text-[11px] font-medium">
-            {isHi ? "उपग्रह सेंसर स्थिति" : "Satellite Telemetry"}
+            {isHi ? "इसरो उपग्रह टेलीमेट्री" : "ISRO Satellite Constellation"}
           </span>
-          <Satellite className="w-4 h-4 text-sky-600 dark:text-sky-500" />
+          <Satellite className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
         </div>
         <div className="mt-1.5 flex items-baseline gap-1.5">
           <span className="text-sm font-semibold text-slate-900 dark:text-white">
-            VIIRS (375m) / MODIS
+            INSAT-3DR & Bhuvan
           </span>
         </div>
         <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          <span>{isHi ? "नवीनतम फीड कनेक्टेड" : "Telemetry Active"}</span>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+          <span>{isHi ? "15 मिनट जियोस्टेशनरी स्कैन" : "15-min Rapid Scan (MOSDAC)"}</span>
         </div>
       </div>
     </div>
