@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import L from "leaflet";
-import { Satellite, Layers, Maximize2, Minimize2, EyeOff } from "lucide-react";
+import { Satellite, Layers, Maximize2, Minimize2 } from "lucide-react";
 
 interface MapComponentProps {
   division: any;
@@ -29,8 +29,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const officersLayerRef = useRef<L.LayerGroup | null>(null);
 
-  // Basemap Mode: "canopy" (Satellite imagery), "vector" (clean street/topo GIS), or "dull" (Muted low-glare dark cartography)
-  const [basemapMode, setBasemapMode] = useState<"canopy" | "vector" | "dull">("canopy");
+  // Basemap Mode: "canopy" (Satellite imagery) or "vector" (clean street/topo GIS)
+  const [basemapMode, setBasemapMode] = useState<"canopy" | "vector">("canopy");
   
   // Full-screen mode state
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
@@ -41,13 +41,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     [31.8, 81.3],
   ];
 
-  const getTileUrl = (mode: "canopy" | "vector" | "dull", currentTheme: "light" | "dark") => {
+  const getTileUrl = (mode: "canopy" | "vector", currentTheme: "light" | "dark") => {
     if (mode === "canopy") {
       return "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-    }
-    if (mode === "dull") {
-      // Subdued / Muted dark matter tiles with minimal contrast labels for low eye strain
-      return "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png";
     }
     return currentTheme === "dark"
       ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
@@ -106,8 +102,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       attribution:
         basemapMode === "canopy"
           ? "Esri World Imagery"
-          : basemapMode === "dull"
-          ? "Carto Dark Subdued (Muted Mode)"
           : "&copy; OpenStreetMap contributors &copy; CARTO",
       maxZoom: 17,
       subdomains: "abcd",
@@ -154,7 +148,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           weight: 2.5,
           opacity: 0.9,
           fillColor: isNainital ? "#059669" : "#0284c7",
-          fillOpacity: basemapMode === "dull" ? 0.05 : 0.08,
+          fillOpacity: 0.08,
           dashArray: "5, 5",
         },
       }).addTo(map);
@@ -320,9 +314,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
       {/* Map Container */}
       <div
         ref={mapContainerRef}
-        className={`w-full h-full z-10 ${
-          basemapMode === "dull" ? "contrast-90 brightness-85" : ""
-        }`}
+        className="w-full h-full z-10"
       />
 
       {/* Top Left: ISRO Bhuvan & MOSDAC Compliance Badge */}
@@ -368,7 +360,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           )}
         </button>
 
-        {/* Basemap Switcher (Canopy / Vector / Dull Muted Mode) */}
+        {/* Basemap Switcher (Canopy / Vector) */}
         <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-lg p-1 shadow-sm flex flex-col gap-1">
           <button
             onClick={() => setBasemapMode("canopy")}
@@ -392,20 +384,6 @@ export const MapComponent: React.FC<MapComponentProps> = ({
           >
             <Layers className="w-3 h-3" />
             <span>{isHi ? "मानचित्र" : "Map"}</span>
-          </button>
-
-          {/* Dull / Muted Mode for Low-Glare Night Control Rooms */}
-          <button
-            onClick={() => setBasemapMode("dull")}
-            title={isHi ? "मंद / म्यूटेड कम-चकाचौंध दृश्य (कंट्रोल रूम हेतु)" : "Dull / Muted Low-Glare Mode (Night Shift)"}
-            className={`px-2 py-1 rounded text-[10px] font-medium transition flex items-center gap-1 ${
-              basemapMode === "dull"
-                ? "bg-amber-600 text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            <EyeOff className="w-3 h-3" />
-            <span>{isHi ? "मंद दृश्य" : "Dull/Muted"}</span>
           </button>
         </div>
       </div>
