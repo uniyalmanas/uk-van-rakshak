@@ -7,6 +7,7 @@ import { MetricsBar } from "@/components/MetricsBar";
 import { IncidentDrawer } from "@/components/IncidentDrawer";
 import { SimulationModal } from "@/components/SimulationModal";
 import { HelpModal } from "@/components/HelpModal";
+import { WeatherWidget } from "@/components/WeatherWidget";
 import forestData from "@/data/uttarakhand_forests.json";
 import { 
   Flame, 
@@ -191,6 +192,12 @@ export default function Home() {
         <MetricsBar
           division={currentDivision}
           hotspots={divisionHotspots}
+          lang={lang}
+        />
+
+        {/* Live Mountain Weather & Fire Weather Index (Open-Meteo) */}
+        <WeatherWidget
+          division={currentDivision}
           lang={lang}
         />
 
