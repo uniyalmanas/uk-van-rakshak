@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Trees, Sun, Moon, RefreshCw, Plus, Globe } from "lucide-react";
+import { Trees, Sun, Moon, RefreshCw, Plus, Globe, HelpCircle } from "lucide-react";
 
 interface NavbarProps {
   selectedDivisionId: string;
   onSelectDivision: (id: string) => void;
   onOpenSimulation: () => void;
+  onOpenHelp: () => void;
   onRefresh: () => void;
   isRefreshing: boolean;
   theme: "light" | "dark";
@@ -19,6 +20,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   selectedDivisionId,
   onSelectDivision,
   onOpenSimulation,
+  onOpenHelp,
   onRefresh,
   isRefreshing,
   theme,
@@ -47,25 +49,37 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block truncate">
               {isHi
-                ? "प्रभाग-स्तरीय वास्तविक समय निगरानी एवं त्वरित गश्ती प्रबंधन"
-                : "Division-Level Satellite Monitoring & Field Patrol Management"}
+                ? "राज्यव्यापी उपग्रह निगरानी एवं त्वरित गश्ती प्रबंधन"
+                : "Statewide Satellite Monitoring & Field Patrol Management"}
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Division Selector */}
+          {/* Division Selector: Statewide & All Divisions */}
           <select
             value={selectedDivisionId}
             onChange={(e) => onSelectDivision(e.target.value)}
-            className="text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md px-2 sm:px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer max-w-[130px] sm:max-w-[200px] truncate"
+            className="text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md px-2 sm:px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer max-w-[140px] sm:max-w-[220px] truncate"
           >
+            <option value="all_uk">
+              {isHi ? "🌐 संपूर्ण उत्तराखंड (राज्य कमान)" : "🌐 All Uttarakhand (Statewide)"}
+            </option>
             <option value="nainital">
-              {isHi ? "नैनीताल वन प्रभाग" : "Nainital Division"}
+              {isHi ? "नैनीताल वन प्रभाग (कुमाऊं)" : "Nainital Division (Kumaon)"}
             </option>
             <option value="almora">
-              {isHi ? "अल्मोड़ा वन प्रभाग" : "Almora Division"}
+              {isHi ? "अल्मोड़ा वन प्रभाग (कुमाऊं)" : "Almora Division (Kumaon)"}
+            </option>
+            <option value="dehradun">
+              {isHi ? "देहरादून वन प्रभाग (गढ़वाल)" : "Dehradun Division (Garhwal)"}
+            </option>
+            <option value="pauri">
+              {isHi ? "पौड़ी गढ़वाल वन प्रभाग" : "Pauri Garhwal Division"}
+            </option>
+            <option value="corbett">
+              {isHi ? "कॉर्बेट टाइगर रिजर्व बफर" : "Corbett Tiger Reserve Buffer"}
             </option>
           </select>
 
@@ -74,14 +88,24 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={onRefresh}
             disabled={isRefreshing}
             title={isHi ? "उपग्रह डेटा रिफ्रेश करें" : "Sync Satellite Data"}
-            className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-md text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1.5"
+            className="p-1.5 sm:px-2 sm:py-1.5 rounded-md text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1.5"
           >
             <RefreshCw
               className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-emerald-600 dark:text-emerald-400" : ""}`}
             />
-            <span className="hidden lg:inline">
+            <span className="hidden xl:inline">
               {isHi ? "रिफ्रेश" : "Sync Feed"}
             </span>
+          </button>
+
+          {/* Help & SOP Guide Button */}
+          <button
+            onClick={onOpenHelp}
+            title={isHi ? "उपयोगकर्ता मार्गदर्शिका एवं SOP" : "User Manual & Field Guide"}
+            className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-md text-xs font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition flex items-center gap-1"
+          >
+            <HelpCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+            <span className="hidden md:inline">{isHi ? "सहायता / SOP" : "Help"}</span>
           </button>
 
           {/* Language Toggle */}
@@ -114,7 +138,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">
-              {isHi ? "मॉक ड्रिल जोड़ें" : "Simulate Incident"}
+              {isHi ? "मॉक ड्रिल" : "Simulate Drill"}
             </span>
             <span className="sm:hidden">{isHi ? "ड्रिल" : "Drill"}</span>
           </button>

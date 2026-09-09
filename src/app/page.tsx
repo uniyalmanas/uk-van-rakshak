@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { MetricsBar } from "@/components/MetricsBar";
 import { IncidentDrawer } from "@/components/IncidentDrawer";
 import { SimulationModal } from "@/components/SimulationModal";
+import { HelpModal } from "@/components/HelpModal";
 import forestData from "@/data/uttarakhand_forests.json";
 import { 
   Flame, 
@@ -37,10 +38,11 @@ const MapComponent = dynamic(
 );
 
 export default function Home() {
-  const [selectedDivisionId, setSelectedDivisionId] = useState<string>("nainital");
+  const [selectedDivisionId, setSelectedDivisionId] = useState<string>("all_uk");
   const [hotspots, setHotspots] = useState<any[]>(forestData.sample_satellite_hotspots);
   const [selectedHotspot, setSelectedHotspot] = useState<any | null>(null);
   const [isSimulationOpen, setIsSimulationOpen] = useState<boolean>(false);
+  const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [filterStatus, setFilterStatus] = useState<string>("all");
   
@@ -75,9 +77,11 @@ export default function Home() {
     forestData.divisions.find((d) => d.id === selectedDivisionId) ||
     forestData.divisions[0];
 
-  const divisionHotspots = hotspots.filter(
-    (h) => h.division_id === selectedDivisionId
-  );
+  // If "all_uk" is selected, show all hotspots across Uttarakhand; otherwise filter by division
+  const divisionHotspots =
+    selectedDivisionId === "all_uk"
+      ? hotspots
+      : hotspots.filter((h) => h.division_id === selectedDivisionId);
 
   const filteredHotspots = divisionHotspots.filter((h) => {
     if (filterStatus === "all") return true;
@@ -172,6 +176,7 @@ export default function Home() {
           setSelectedHotspot(null);
         }}
         onOpenSimulation={() => setIsSimulationOpen(true)}
+        onOpenHelp={() => setIsHelpOpen(true)}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}
         theme={theme}
@@ -241,11 +246,13 @@ export default function Home() {
               mobileTab === "map" ? "hidden lg:flex" : "flex"
             }`}
           >
-            {/* Division DFO Contact Card */}
+            {/* Division / State Command Contact Card */}
             <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex items-center justify-between shadow-xs">
               <div>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider block">
-                  {isHi ? "प्रभागीय वनाधिकारी" : "Divisional Forest Officer"}
+                  {selectedDivisionId === "all_uk"
+                    ? (isHi ? "राज्य नोडल वनाग्नि कमान" : "State Nodal Wildfire Command")
+                    : (isHi ? "प्रभागीय वनाधिकारी" : "Divisional Forest Officer")}
                 </span>
                 <span className="text-xs font-bold text-slate-900 dark:text-white">
                   {currentDivision.dfo}
@@ -259,7 +266,7 @@ export default function Home() {
                 className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 transition flex items-center gap-1.5 text-xs font-medium"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
-                <span className="text-xs font-mono">{isHi ? "वायरलेस" : "Radio"}</span>
+                <span className="text-xs font-mono">{isHi ? "कंट्रोल रूम" : "Control"}</span>
               </a>
             </div>
 
@@ -319,8 +326,8 @@ export default function Home() {
                   </p>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                     {isHi
-                      ? "परीक्षण हेतु ऊपर 'मॉक ड्रिल जोड़ें' पर क्लिक करें।"
-                      : "Click 'Simulate Incident' above to run a drill."}
+                      ? "परीक्षण हेतु ऊपर 'मॉक ड्रिल' पर क्लिक करें।"
+                      : "Click 'Simulate Drill' above to run a training incident."}
                   </p>
                 </div>
               ) : (
@@ -336,7 +343,6 @@ export default function Home() {
                       key={spot.id}
                       onClick={() => {
                         setSelectedHotspot(spot);
-                        // On mobile, if in list tab, let them inspect it
                       }}
                       className={`p-2.5 rounded-lg border transition cursor-pointer ${
                         isSelected
@@ -414,6 +420,13 @@ export default function Home() {
         division={currentDivision}
         onClose={() => setIsSimulationOpen(false)}
         onAddIncident={handleAddIncident}
+        lang={lang}
+      />
+
+      {/* Help & SOP Guide Dialog */}
+      <HelpModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
         lang={lang}
       />
     </div>

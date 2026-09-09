@@ -1,6 +1,57 @@
 {
   "divisions": [
     {
+      "id": "all_uk",
+      "name": "Entire Uttarakhand (Statewide Command)",
+      "circle": "State Headquarters (Aranya Bhavan, Dehradun)",
+      "headquarters": "Dehradun, Uttarakhand",
+      "dfo": "PCCF (HoFF) & State Nodal Officer (Forest Fire)",
+      "control_room_contact": "+91-135-2744158",
+      "total_area_sqkm": 38000.0,
+      "fire_vulnerability": "High (Statewide Chir Pine & Mixed Forest Belts)",
+      "center": [30.0668, 79.0193],
+      "default_zoom": 8,
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "name": "Uttarakhand State Boundary",
+          "color": "#10b981",
+          "density": "Statewide Forest Cover (71.05%)"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [77.5700, 30.3100],
+              [77.7000, 30.7000],
+              [78.0000, 31.0000],
+              [78.5000, 31.3500],
+              [79.1000, 31.4500],
+              [79.8000, 31.2500],
+              [80.5000, 30.8500],
+              [80.9000, 30.3000],
+              [80.7000, 29.5000],
+              [80.2000, 28.8500],
+              [79.4000, 28.9500],
+              [78.8000, 29.3000],
+              [78.2000, 29.6000],
+              [77.8000, 30.0000],
+              [77.5700, 30.3100]
+            ]
+          ]
+        }
+      },
+      "ranges": [
+        { "id": "st-1", "name": "Garhwal Circle Control", "officer": "CF Garhwal", "phone": "+91-135-2430001" },
+        { "id": "st-2", "name": "Kumaon Circle Control", "officer": "CF Kumaon", "phone": "+91-5942-235002" },
+        { "id": "st-3", "name": "Western Circle Control", "officer": "CF Western", "phone": "+91-5947-251003" }
+      ],
+      "beat_officers": [
+        { "id": "st-beat-1", "name": "Central Rapid Action Force (QRF 1)", "beat": "Garhwal Zone QRF", "range": "Garhwal Circle", "phone": "+91 94120 11001", "status": "Available", "location": [30.1500, 78.7800] },
+        { "id": "st-beat-2", "name": "Central Rapid Action Force (QRF 2)", "beat": "Kumaon Zone QRF", "range": "Kumaon Circle", "phone": "+91 94120 11002", "status": "Available", "location": [29.4500, 79.5200] }
+      ]
+    },
+    {
       "id": "nainital",
       "name": "Nainital Forest Division",
       "circle": "Kumaon Circle",
@@ -94,6 +145,137 @@
       "beat_officers": [
         { "id": "beat-201", "name": "Dan Singh (Forest Guard)", "beat": "Kasar Devi Beat", "range": "Almora North Range", "phone": "+91 94123 77881", "status": "On Patrol", "location": [29.6300, 79.6700] },
         { "id": "beat-202", "name": "Kailash Giri (Van Karmi)", "beat": "Chitai Ridge Beat", "range": "Almora North Range", "phone": "+91 94123 77882", "status": "Available", "location": [29.6050, 79.7020] }
+      ]
+    },
+    {
+      "id": "dehradun",
+      "name": "Dehradun Forest Division",
+      "circle": "Garhwal / Shivalik Circle",
+      "headquarters": "Dehradun, Uttarakhand",
+      "dfo": "N. S. Rawat, IFS",
+      "control_room_contact": "+91-135-2655290",
+      "total_area_sqkm": 870.0,
+      "fire_vulnerability": "High (Mussoorie Foothills & Rajpur Ridge)",
+      "center": [30.3165, 78.0322],
+      "default_zoom": 11,
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "name": "Dehradun Forest Division",
+          "color": "#0ea5e9",
+          "density": "Sal & Mixed Sub-Himalayan Forest"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [77.8500, 30.2000],
+              [78.0500, 30.1500],
+              [78.2500, 30.2200],
+              [78.2800, 30.4000],
+              [78.1500, 30.4800],
+              [77.9500, 30.4500],
+              [77.8200, 30.3200],
+              [77.8500, 30.2000]
+            ]
+          ]
+        }
+      },
+      "ranges": [
+        { "id": "ddn-1", "name": "Mussoorie Buffer Range", "officer": "A. K. Sharma (RO)", "phone": "+91-135-2632001" },
+        { "id": "ddn-2", "name": "Rishikesh Range", "officer": "P. S. Thapa (RO)", "phone": "+91-135-2431002" },
+        { "id": "ddn-3", "name": "Thano Range", "officer": "Sunita Rawat (RO)", "phone": "+91-135-2763003" }
+      ],
+      "beat_officers": [
+        { "id": "beat-301", "name": "Vikram Singh (Forest Guard)", "beat": "Rajpur Mussoorie Beat", "range": "Mussoorie Buffer Range", "phone": "+91 94129 33011", "status": "On Patrol", "location": [30.4000, 78.0800] },
+        { "id": "beat-302", "name": "Kuldeep Negi (Van Karmi)", "beat": "Thano Reserve Beat", "range": "Thano Range", "phone": "+91 94129 33012", "status": "Available", "location": [30.2500, 78.2000] }
+      ]
+    },
+    {
+      "id": "pauri",
+      "name": "Pauri Garhwal Forest Division",
+      "circle": "Garhwal Circle",
+      "headquarters": "Pauri, Uttarakhand",
+      "dfo": "M. S. Chauhan, IFS",
+      "control_room_contact": "+91-1368-222240",
+      "total_area_sqkm": 1450.0,
+      "fire_vulnerability": "Severe (Steep Garhwal Chir Pine Ridges)",
+      "center": [30.1500, 78.7800],
+      "default_zoom": 11,
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "name": "Pauri Garhwal Forest Division",
+          "color": "#eab308",
+          "density": "Steep Chir Pine Slope"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [78.5500, 29.9500],
+              [78.8500, 29.8500],
+              [79.0500, 30.1000],
+              [78.9500, 30.3500],
+              [78.7000, 30.3800],
+              [78.5000, 30.2200],
+              [78.4500, 30.0500],
+              [78.5500, 29.9500]
+            ]
+          ]
+        }
+      },
+      "ranges": [
+        { "id": "pau-1", "name": "Pauri Central Range", "officer": "H. S. Bhandari (RO)", "phone": "+91-1368-223101" },
+        { "id": "pau-2", "name": "Srinagar Range", "officer": "R. K. Gairola (RO)", "phone": "+91-1346-252102" },
+        { "id": "pau-3", "name": "Lansdowne Southern Range", "officer": "Umesh Pokhriyal (RO)", "phone": "+91-1386-262103" }
+      ],
+      "beat_officers": [
+        { "id": "beat-401", "name": "Prakash Rawat (Forest Guard)", "beat": "Nagdev Pine Beat", "range": "Pauri Central Range", "phone": "+91 94117 88910", "status": "On Patrol", "location": [30.1600, 78.8000] },
+        { "id": "beat-402", "name": "Surendra Negi (Watcher)", "beat": "Srinagar Alaknanda Beat", "range": "Srinagar Range", "phone": "+91 94117 88911", "status": "Available", "location": [30.2200, 78.7800] }
+      ]
+    },
+    {
+      "id": "corbett",
+      "name": "Corbett Tiger Reserve Buffer Division",
+      "circle": "Western / Project Tiger Circle",
+      "headquarters": "Ramnagar, Nainital, Uttarakhand",
+      "dfo": "Director, Corbett Tiger Reserve",
+      "control_room_contact": "+91-5947-251489",
+      "total_area_sqkm": 1288.3,
+      "fire_vulnerability": "Critical (Sal Canopy & Wildlife Corridor)",
+      "center": [29.5300, 78.9600],
+      "default_zoom": 11,
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "name": "Corbett Tiger Reserve Buffer Division",
+          "color": "#f97316",
+          "density": "Dense Sal, Grassland (Chaurs) & Riverine Forest"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [78.7500, 29.4000],
+              [79.1500, 29.3500],
+              [79.2200, 29.5500],
+              [79.1000, 29.7500],
+              [78.8500, 29.7200],
+              [78.6800, 29.5800],
+              [78.7500, 29.4000]
+            ]
+          ]
+        }
+      },
+      "ranges": [
+        { "id": "cbt-1", "name": "Dhikala Forest Range", "officer": "Rajesh Semwal (RO)", "phone": "+91-5947-251101" },
+        { "id": "cbt-2", "name": "Bijrani Range", "officer": "Devendra Bisht (RO)", "phone": "+91-5947-251102" },
+        { "id": "cbt-3", "name": "Kalagarh Buffer Range", "officer": "M. P. Singh (RO)", "phone": "+91-5947-251103" }
+      ],
+      "beat_officers": [
+        { "id": "beat-501", "name": "Harish Chandra (Tiger Guard)", "beat": "Dhikala Core Beat", "range": "Dhikala Forest Range", "phone": "+91 98375 66011", "status": "On Patrol", "location": [29.5600, 78.9200] },
+        { "id": "beat-502", "name": "Arjun Rawat (Special Tiger Protection Force)", "beat": "Bijrani Grassland Beat", "range": "Bijrani Range", "phone": "+91 98375 66012", "status": "On Patrol", "location": [29.4800, 79.0800] }
       ]
     }
   ],
@@ -192,6 +374,78 @@
       "spread_risk": "HIGH - Heading toward temple ridge buffer zone",
       "status": "active",
       "assigned_guard": "Dan Singh (Kasar Devi Beat)",
+      "is_simulation": false
+    },
+    {
+      "id": "firms-uk-905",
+      "division_id": "dehradun",
+      "latitude": 30.3850,
+      "longitude": 78.0750,
+      "brightness_kelvin": 322.0,
+      "confidence": "nominal",
+      "confidence_percent": 81,
+      "frp_mw": 15.4,
+      "satellite": "Suomi NPP (VIIRS 375m)",
+      "detected_at": "55 minutes ago",
+      "detected_timestamp": "2026-09-09T06:10:00Z",
+      "range_name": "Mussoorie Buffer Range",
+      "nearest_beat": "Rajpur Mussoorie Beat",
+      "elevation_meters": 1340,
+      "slope_aspect": "North-East (22° slope)",
+      "fuel_type": "Sal & Dry Understory",
+      "wind_speed_kmh": 12,
+      "wind_direction": "North (20°)",
+      "spread_risk": "MODERATE - Moving upslope toward old toll ridge",
+      "status": "active",
+      "assigned_guard": "Vikram Singh (Rajpur Mussoorie Beat)",
+      "is_simulation": false
+    },
+    {
+      "id": "firms-uk-906",
+      "division_id": "pauri",
+      "latitude": 30.1750,
+      "longitude": 78.8150,
+      "brightness_kelvin": 335.2,
+      "confidence": "high",
+      "confidence_percent": 91,
+      "frp_mw": 24.1,
+      "satellite": "NOAA-20 (VIIRS 375m)",
+      "detected_at": "30 minutes ago",
+      "detected_timestamp": "2026-09-09T06:35:00Z",
+      "range_name": "Pauri Central Range",
+      "nearest_beat": "Nagdev Pine Beat",
+      "elevation_meters": 1890,
+      "slope_aspect": "South-Facing Ridge (35° slope)",
+      "fuel_type": "Chir Pine Needle Bed (Pirul)",
+      "wind_speed_kmh": 19,
+      "wind_direction": "North-East (50°)",
+      "spread_risk": "CRITICAL - High wind driving fire upslope to temple forest",
+      "status": "dispatched",
+      "assigned_guard": "Prakash Rawat (Nagdev Pine Beat)",
+      "is_simulation": false
+    },
+    {
+      "id": "firms-uk-907",
+      "division_id": "corbett",
+      "latitude": 29.5400,
+      "longitude": 78.9450,
+      "brightness_kelvin": 312.4,
+      "confidence": "nominal",
+      "confidence_percent": 72,
+      "frp_mw": 9.8,
+      "satellite": "Aqua (MODIS 1km)",
+      "detected_at": "1 hour 45 mins ago",
+      "detected_timestamp": "2026-09-09T05:20:00Z",
+      "range_name": "Dhikala Forest Range",
+      "nearest_beat": "Dhikala Core Beat",
+      "elevation_meters": 460,
+      "slope_aspect": "River Terrace Flat (5° slope)",
+      "fuel_type": "Elephant Grass & Dry Riverbed Scrub",
+      "wind_speed_kmh": 8,
+      "wind_direction": "West (270°)",
+      "spread_risk": "MONITORED - Chaur buffer fire, patrol unit dispatched",
+      "status": "contained",
+      "assigned_guard": "Harish Chandra (Dhikala Core Beat)",
       "is_simulation": false
     }
   ]
