@@ -11,12 +11,11 @@ import {
   Flame, 
   MapPin, 
   Shield, 
-  Clock, 
-  Filter, 
   PhoneCall, 
-  AlertCircle,
-  ExternalLink,
-  ChevronRight
+  ChevronRight,
+  FileText,
+  Map as MapIcon,
+  ListFilter
 } from "lucide-react";
 
 // Dynamically import MapComponent to disable SSR for Leaflet
@@ -25,11 +24,11 @@ const MapComponent = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-full min-h-[500px] flex items-center justify-center bg-slate-950 border border-slate-800 rounded-2xl">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 rounded-full border-2 border-amber-500 border-t-transparent animate-spin" />
-          <span className="text-xs text-slate-400 font-mono">
-            Initializing Uttarakhand PostGIS Cartography...
+      <div className="w-full h-full min-h-[420px] flex items-center justify-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-6 w-6 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin" />
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            Loading Cartography...
           </span>
         </div>
       </div>
@@ -44,12 +43,38 @@ export default function Home() {
   const [isSimulationOpen, setIsSimulationOpen] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  
+  // Clean Theme & Language states
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [lang, setLang] = useState<"en" | "hi">("en");
+  
+  // Mobile View Tab: "map" | "list"
+  const [mobileTab, setMobileTab] = useState<"map" | "list">("map");
+
+  // Sync theme with HTML document class
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
+  const toggleLang = () => {
+    setLang((prev) => (prev === "en" ? "hi" : "en"));
+  };
+
+  const isHi = lang === "hi";
 
   const currentDivision =
     forestData.divisions.find((d) => d.id === selectedDivisionId) ||
     forestData.divisions[0];
 
-  // Filter hotspots for current division and status
   const divisionHotspots = hotspots.filter(
     (h) => h.division_id === selectedDivisionId
   );
@@ -67,7 +92,6 @@ export default function Home() {
       if (res.ok) {
         const data = await res.json();
         if (data.hotspots && data.hotspots.length > 0) {
-          // Merge preserving existing simulation drills
           setHotspots((prev) => {
             const simulations = prev.filter((p) => p.is_simulation);
             return [...data.hotspots, ...simulations];
@@ -77,11 +101,10 @@ export default function Home() {
     } catch (e) {
       console.error("Refresh error", e);
     } finally {
-      setTimeout(() => setIsRefreshing(false), 600);
+      setTimeout(() => setIsRefreshing(false), 500);
     }
   };
 
-  // Update Status of an Incident
   const handleUpdateStatus = (
     id: string,
     newStatus: string,
@@ -109,14 +132,38 @@ export default function Home() {
     }
   };
 
-  // Add simulated incident
   const handleAddIncident = (newIncident: any) => {
     setHotspots((prev) => [newIncident, ...prev]);
     setSelectedHotspot(newIncident);
   };
 
+  // Export Situation Report (SitRep)
+  const handleExportSitRep = () => {
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      ["Incident ID,Division,Range,Beat,Latitude,Longitude,Brightness(K),FRP(MW),Status,Assigned Officer"]
+        .concat(
+          divisionHotspots.map(
+            (h) =>
+              `"${h.id}","${h.division_id}","${h.range_name}","${h.nearest_beat}",${h.latitude},${h.longitude},${h.brightness_kelvin},${h.frp_mw},"${h.status}","${h.assigned_guard}"`
+          )
+        )
+        .join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `SitRep_${selectedDivisionId}_${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#070b14] text-slate-100">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#090e17] text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* Top Navbar */}
       <Navbar
         selectedDivisionId={selectedDivisionId}
@@ -127,159 +174,218 @@ export default function Home() {
         onOpenSimulation={() => setIsSimulationOpen(true)}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}
-        totalHotspots={divisionHotspots.length}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        lang={lang}
+        onToggleLang={toggleLang}
       />
 
-      {/* Main Command Dashboard Layout */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col">
-        {/* Top Operational Metrics */}
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 lg:p-6 flex flex-col">
+        {/* Executive Metrics Bar */}
         <MetricsBar
           division={currentDivision}
           hotspots={divisionHotspots}
+          lang={lang}
         />
 
-        {/* GIS Map & Tactical Feed Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-[620px]">
-          {/* Main Leaflet GIS Map (8 Columns) */}
-          <div className="lg:col-span-8 h-[520px] lg:h-auto min-h-[500px]">
+        {/* Mobile Segmented Switcher (Visible only on < lg screens) */}
+        <div className="flex lg:hidden mb-3 bg-slate-200 dark:bg-slate-800 p-1 rounded-lg text-xs font-medium">
+          <button
+            onClick={() => setMobileTab("map")}
+            className={`flex-1 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition ${
+              mobileTab === "map"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400"
+            }`}
+          >
+            <MapIcon className="w-3.5 h-3.5" />
+            <span>{isHi ? "मानचित्र" : "Map View"}</span>
+          </button>
+          <button
+            onClick={() => setMobileTab("list")}
+            className={`flex-1 py-1.5 rounded-md flex items-center justify-center gap-1.5 transition ${
+              mobileTab === "list"
+                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400"
+            }`}
+          >
+            <ListFilter className="w-3.5 h-3.5" />
+            <span>
+              {isHi ? "घटना सूची" : "Incident List"} ({divisionHotspots.length})
+            </span>
+          </button>
+        </div>
+
+        {/* GIS Map & Dispatch Console Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 min-h-[560px]">
+          {/* Main Leaflet Map: full on desktop, conditionally displayed on mobile */}
+          <div
+            className={`lg:col-span-8 h-[480px] lg:h-auto min-h-[460px] ${
+              mobileTab === "list" ? "hidden lg:block" : "block"
+            }`}
+          >
             <MapComponent
               division={currentDivision}
               hotspots={filteredHotspots}
               selectedHotspot={selectedHotspot}
               onSelectHotspot={(spot) => setSelectedHotspot(spot)}
+              theme={theme}
+              lang={lang}
             />
           </div>
 
-          {/* Incident Feed & Division Dispatch Console (4 Columns) */}
-          <div className="lg:col-span-4 flex flex-col gap-4">
+          {/* Incident Feed & Action Sidebar */}
+          <div
+            className={`lg:col-span-4 flex flex-col gap-3 ${
+              mobileTab === "map" ? "hidden lg:flex" : "flex"
+            }`}
+          >
             {/* Division DFO Contact Card */}
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
+            <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-xl p-3 flex items-center justify-between shadow-xs">
               <div>
-                <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">
-                  Division Command In-Charge
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider block">
+                  {isHi ? "प्रभागीय वनाधिकारी" : "Divisional Forest Officer"}
                 </span>
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-bold text-slate-900 dark:text-white">
                   {currentDivision.dfo}
                 </span>
-                <span className="text-[11px] text-slate-400 block">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
                   {currentDivision.name}
                 </span>
               </div>
               <a
                 href={`tel:${currentDivision.control_room_contact}`}
-                className="p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 transition flex items-center gap-1.5 text-xs font-medium"
+                className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 hover:bg-emerald-100 transition flex items-center gap-1.5 text-xs font-medium"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">HQ Radio</span>
+                <span className="text-xs font-mono">{isHi ? "वायरलेस" : "Radio"}</span>
               </a>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="flex items-center gap-1 bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
+            {/* Filter Tabs & Export SitRep Button */}
+            <div className="flex items-center justify-between gap-1 bg-white dark:bg-slate-900/80 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+              <div className="flex items-center gap-0.5 flex-1">
+                <button
+                  onClick={() => setFilterStatus("all")}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition ${
+                    filterStatus === "all"
+                      ? "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-semibold"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-800"
+                  }`}
+                >
+                  {isHi ? "सभी" : "All"} ({divisionHotspots.length})
+                </button>
+                <button
+                  onClick={() => setFilterStatus("active")}
+                  className={`px-2 py-1 rounded-md text-[11px] font-medium transition ${
+                    filterStatus === "active"
+                      ? "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-semibold"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-800"
+                  }`}
+                >
+                  {isHi ? "सक्रिय" : "Active"}
+                </button>
+                <button
+                  onClick={() => setFilterStatus("dispatched")}
+                  className={`px-2 py-1 rounded-md text-[11px] font-medium transition ${
+                    filterStatus === "dispatched"
+                      ? "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-semibold"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-800"
+                  }`}
+                >
+                  {isHi ? "रवाना" : "Dispatched"}
+                </button>
+              </div>
+
+              {/* Export SitRep CSV */}
               <button
-                onClick={() => setFilterStatus("all")}
-                className={`flex-1 py-1.5 rounded-lg font-medium transition ${
-                  filterStatus === "all"
-                    ? "bg-slate-800 text-white shadow-sm"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
+                onClick={handleExportSitRep}
+                title={isHi ? "दैनिक स्थिति रिपोर्ट (CSV) डाउनलोड करें" : "Download Daily Situation Report"}
+                className="p-1.5 rounded-md text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition flex items-center gap-1 text-[11px]"
               >
-                All ({divisionHotspots.length})
-              </button>
-              <button
-                onClick={() => setFilterStatus("active")}
-                className={`flex-1 py-1.5 rounded-lg font-medium transition ${
-                  filterStatus === "active"
-                    ? "bg-red-500/20 text-red-300 border border-red-500/40"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                Active
-              </button>
-              <button
-                onClick={() => setFilterStatus("dispatched")}
-                className={`flex-1 py-1.5 rounded-lg font-medium transition ${
-                  filterStatus === "dispatched"
-                    ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                Dispatched
-              </button>
-              <button
-                onClick={() => setFilterStatus("contained")}
-                className={`flex-1 py-1.5 rounded-lg font-medium transition ${
-                  filterStatus === "contained"
-                    ? "bg-sky-500/20 text-sky-300 border border-sky-500/40"
-                    : "text-slate-400 hover:text-slate-200"
-                }`}
-              >
-                Contained
+                <FileText className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+                <span className="hidden sm:inline font-mono">SitRep</span>
               </button>
             </div>
 
-            {/* Hotspots Incident List */}
-            <div className="flex-1 bg-slate-900/70 border border-slate-800 rounded-2xl p-3 overflow-y-auto space-y-2.5 max-h-[500px]">
+            {/* Hotspots Incident Feed */}
+            <div className="flex-1 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 overflow-y-auto space-y-2 max-h-[500px] shadow-xs">
               {filteredHotspots.length === 0 ? (
-                <div className="h-48 flex flex-col items-center justify-center text-center p-4">
-                  <Shield className="w-8 h-8 text-emerald-400/60 mb-2" />
-                  <p className="text-xs font-semibold text-slate-300">
-                    No Hotspots Under This Filter
+                <div className="h-40 flex flex-col items-center justify-center text-center p-4">
+                  <Shield className="w-7 h-7 text-emerald-600 dark:text-emerald-500 mb-1.5" />
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                    {isHi ? "इस श्रेणी में कोई घटना नहीं" : "No Incidents in This Category"}
                   </p>
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Select another filter or click &quot;Simulate Incident&quot; to test.
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {isHi
+                      ? "परीक्षण हेतु ऊपर 'मॉक ड्रिल जोड़ें' पर क्लिक करें।"
+                      : "Click 'Simulate Incident' above to run a drill."}
                   </p>
                 </div>
               ) : (
                 filteredHotspots.map((spot) => {
                   const isSelected = selectedHotspot?.id === spot.id;
+                  let statusColor = "bg-rose-600";
+                  if (spot.status === "dispatched") statusColor = "bg-amber-600";
+                  if (spot.status === "contained") statusColor = "bg-sky-600";
+                  if (spot.status === "resolved") statusColor = "bg-emerald-600";
+
                   return (
                     <div
                       key={spot.id}
-                      onClick={() => setSelectedHotspot(spot)}
-                      className={`p-3 rounded-xl border transition cursor-pointer ${
+                      onClick={() => {
+                        setSelectedHotspot(spot);
+                        // On mobile, if in list tab, let them inspect it
+                      }}
+                      className={`p-2.5 rounded-lg border transition cursor-pointer ${
                         isSelected
-                          ? "bg-slate-800/90 border-amber-500/80 shadow-md shadow-amber-500/10"
-                          : "bg-slate-950/60 border-slate-800/80 hover:bg-slate-800/50 hover:border-slate-700"
+                          ? "bg-slate-50 dark:bg-slate-800 border-emerald-500 shadow-xs"
+                          : "bg-white dark:bg-slate-950/50 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                       }`}
                     >
-                      <div className="flex items-start justify-between">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span
-                            className={`h-2.5 w-2.5 rounded-full ${
-                              spot.status === "active"
-                                ? "bg-red-500 animate-pulse"
-                                : spot.status === "dispatched"
-                                ? "bg-amber-400"
-                                : "bg-emerald-400"
-                            }`}
-                          />
-                          <span className="text-xs font-bold text-slate-200">
+                          <span className={`h-2 w-2 rounded-full ${statusColor}`} />
+                          <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                             {spot.range_name}
                           </span>
                         </div>
-                        <span className="text-[10px] text-slate-400 font-mono">
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                           {spot.detected_at}
                         </span>
                       </div>
 
-                      <div className="mt-2 text-[11px] text-slate-400 flex items-center justify-between">
-                        <span>Beat: <b className="text-slate-200">{spot.nearest_beat}</b></span>
-                        <span className="font-mono text-amber-400 font-semibold">{spot.brightness_kelvin} K</span>
+                      <div className="mt-1.5 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                        <span>
+                          {isHi ? "बीट:" : "Beat:"}{" "}
+                          <b className="text-slate-700 dark:text-slate-300 font-medium">
+                            {spot.nearest_beat}
+                          </b>
+                        </span>
+                        <span className="font-mono text-slate-700 dark:text-slate-300">
+                          {spot.brightness_kelvin} K
+                        </span>
                       </div>
 
-                      <div className="mt-1 text-[11px] text-slate-400 flex items-center justify-between">
-                        <span>Guard: <span className="text-slate-300">{spot.assigned_guard?.split(" ")[0]}</span></span>
-                        <span className="text-[10px] text-sky-400">{spot.elevation_meters}m</span>
+                      <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                        <span>
+                          {isHi ? "गार्ड:" : "Guard:"}{" "}
+                          <span className="text-slate-700 dark:text-slate-300">
+                            {spot.assigned_guard?.split(" ")[0]}
+                          </span>
+                        </span>
+                        <span className="text-[10px] text-slate-400">
+                          {spot.elevation_meters}m
+                        </span>
                       </div>
 
-                      <div className="mt-2 pt-2 border-t border-slate-800/60 flex items-center justify-between">
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-red-400 flex items-center gap-1">
-                          <Flame className="w-3 h-3" />
+                      <div className="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[10.5px]">
+                        <span className="font-medium text-rose-700 dark:text-rose-400 truncate max-w-[170px]">
                           {spot.spread_risk.split("-")[0]}
                         </span>
-                        <span className="text-[10px] text-slate-400 flex items-center gap-0.5 group-hover:text-white">
-                          Dispatch Action <ChevronRight className="w-3 h-3" />
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center">
+                          {isHi ? "विवरण देखें" : "View"} <ChevronRight className="w-3 h-3" />
                         </span>
                       </div>
                     </div>
@@ -291,22 +397,24 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Slide-in Incident Inspection & Dispatch Drawer */}
+      {/* Slide-out / Bottom-Sheet Incident Drawer */}
       {selectedHotspot && (
         <IncidentDrawer
           hotspot={selectedHotspot}
           division={currentDivision}
           onClose={() => setSelectedHotspot(null)}
           onUpdateStatus={handleUpdateStatus}
+          lang={lang}
         />
       )}
 
-      {/* Drill Simulation Modal */}
+      {/* Drill Simulation Dialog */}
       <SimulationModal
         isOpen={isSimulationOpen}
         division={currentDivision}
         onClose={() => setIsSimulationOpen(false)}
         onAddIncident={handleAddIncident}
+        lang={lang}
       />
     </div>
   );

@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Flame, Wind, Mountain, Send, Play } from "lucide-react";
+import { X, Flame, Play } from "lucide-react";
 
 interface SimulationModalProps {
   isOpen: boolean;
   division: any;
   onClose: () => void;
   onAddIncident: (incident: any) => void;
+  lang: "en" | "hi";
 }
 
 export const SimulationModal: React.FC<SimulationModalProps> = ({
@@ -15,42 +16,45 @@ export const SimulationModal: React.FC<SimulationModalProps> = ({
   division,
   onClose,
   onAddIncident,
+  lang,
 }) => {
+  const isHi = lang === "hi";
   const [selectedRange, setSelectedRange] = useState(division?.ranges?.[0]?.name || "Nainital Range");
   const [intensity, setIntensity] = useState<"high" | "nominal">("high");
-  const [windSpeed, setWindSpeed] = useState("18");
-  const [windDirection, setWindDirection] = useState("North-East (45°)");
+  const [windSpeed, setWindSpeed] = useState("16");
+  const [windDirection, setWindDirection] = useState("North-East");
 
   if (!isOpen) return null;
 
   const handleCreate = () => {
-    // Generate a point within the division bounding box
     const baseLat = division?.center?.[0] || 29.39;
     const baseLon = division?.center?.[1] || 79.45;
     const latOffset = (Math.random() - 0.5) * 0.05;
     const lonOffset = (Math.random() - 0.5) * 0.05;
 
     const newSimIncident = {
-      id: `SIM-DRILL-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: `DRILL-${Math.floor(1000 + Math.random() * 9000)}`,
       division_id: division.id,
       latitude: Number((baseLat + latOffset).toFixed(4)),
       longitude: Number((baseLon + lonOffset).toFixed(4)),
-      brightness_kelvin: intensity === "high" ? 342.5 : 318.0,
+      brightness_kelvin: intensity === "high" ? 336.5 : 316.0,
       confidence: intensity,
-      confidence_percent: intensity === "high" ? 95 : 78,
-      frp_mw: intensity === "high" ? 32.4 : 14.2,
-      satellite: "SIMULATED DRILL (VIIRS 375m Equivalent)",
-      detected_at: "Just Now (Live Drill)",
+      confidence_percent: intensity === "high" ? 92 : 74,
+      frp_mw: intensity === "high" ? 28.4 : 12.0,
+      satellite: "Simulated Test Drill (VIIRS 375m)",
+      detected_at: isHi ? "अभी दर्ज (प्रशिक्षण)" : "Just Now (Training Drill)",
       range_name: selectedRange,
-      nearest_beat: `${selectedRange} Sector 2`,
-      elevation_meters: 1980,
-      slope_aspect: "South-Facing (31° slope)",
-      fuel_type: "Dry Pine Litter & Oak Understory",
+      nearest_beat: `${selectedRange} Sector Beat`,
+      elevation_meters: 1960,
+      slope_aspect: "South-Facing (28° slope)",
+      fuel_type: "Chir Pine Needle Bed",
       wind_speed_kmh: Number(windSpeed),
       wind_direction: windDirection,
-      spread_risk: "DRILL SIMULATION - Rapid upslope propagation modeled",
+      spread_risk: isHi
+        ? "मॉक ड्रिल - चीड़ वन में ऊपर की ओर फैलाव का अनुमान"
+        : "TRAINING DRILL - Upslope ridge spread simulated",
       status: "active",
-      assigned_guard: division?.beat_officers?.[0]?.name || "Field Officer",
+      assigned_guard: division?.beat_officers?.[0]?.name || "Duty Guard",
       is_simulation: true,
     };
 
@@ -59,45 +63,41 @@ export const SimulationModal: React.FC<SimulationModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#0f172a] border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+      <div className="bg-white dark:bg-[#111723] border border-slate-200 dark:border-slate-800 rounded-xl w-full max-w-md shadow-xl overflow-hidden animate-in fade-in zoom-in duration-150">
+        {/* Header */}
+        <div className="p-3.5 sm:p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/40">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
-              <Play className="w-4 h-4 text-orange-400" />
+            <div className="h-7 w-7 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center">
+              <Play className="w-3.5 h-3.5 fill-current" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-white">
-                Simulate Forest Fire Drill
+              <h2 className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white">
+                {isHi ? "वनाग्नि मॉक ड्रिल जोड़ें" : "Simulate Incident Drill"}
               </h2>
-              <p className="text-[11px] text-slate-400">
-                Test early detection, terrain vectors & dispatch without false alarms
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                {isHi ? "त्वरित प्रतिक्रिया एवं परीक्षण हेतु" : "Test dispatch workflow without false alarms"}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-5 space-y-4 text-xs">
+        {/* Form Body */}
+        <div className="p-4 space-y-3 text-xs">
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
-              Target Division & Range:
+            <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1 text-[11px]">
+              {isHi ? "लक्षित रेंज चुनें:" : "Select Target Range:"}
             </label>
-            <div className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-slate-200 font-medium flex justify-between items-center mb-2">
-              <span>{division?.name}</span>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                Polygon Locked
-              </span>
-            </div>
             <select
               value={selectedRange}
               onChange={(e) => setSelectedRange(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 font-medium focus:ring-1 focus:ring-orange-500 focus:outline-none"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-md p-2 text-slate-900 dark:text-slate-200 font-medium focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             >
               {division?.ranges?.map((range: any) => (
                 <option key={range.id} value={range.name}>
@@ -107,74 +107,73 @@ export const SimulationModal: React.FC<SimulationModalProps> = ({
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
-                Thermal Intensity:
+              <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1 text-[11px]">
+                {isHi ? "आग की तीव्रता:" : "Thermal Intensity:"}
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5">
                 <button
                   type="button"
                   onClick={() => setIntensity("high")}
-                  className={`p-2 rounded-lg border text-center font-bold transition ${
+                  className={`p-1.5 rounded-md border text-center font-medium transition ${
                     intensity === "high"
-                      ? "bg-red-500/20 text-red-400 border-red-500/50"
-                      : "bg-slate-950 border-slate-800 text-slate-400"
+                      ? "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800"
+                      : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                   }`}
                 >
-                  🔥 Critical
+                  {isHi ? "उच्च" : "High"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setIntensity("nominal")}
-                  className={`p-2 rounded-lg border text-center font-bold transition ${
+                  className={`p-1.5 rounded-md border text-center font-medium transition ${
                     intensity === "nominal"
-                      ? "bg-amber-500/20 text-amber-400 border-amber-500/50"
-                      : "bg-slate-950 border-slate-800 text-slate-400"
+                      ? "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800"
+                      : "bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
                   }`}
                 >
-                  ⚡ Moderate
+                  {isHi ? "मध्यम" : "Moderate"}
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">
-                Simulated Wind Speed:
+              <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1 text-[11px]">
+                {isHi ? "हवा की गति (km/h):" : "Wind Speed (km/h):"}
               </label>
               <input
                 type="number"
                 value={windSpeed}
                 onChange={(e) => setWindSpeed(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 font-medium focus:ring-1 focus:ring-orange-500 focus:outline-none"
-                placeholder="km/h"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-md p-1.5 text-slate-900 dark:text-slate-200 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-slate-300 font-medium mb-1">
-              Wind Vector & Spread Axis:
+            <label className="block text-slate-600 dark:text-slate-400 font-medium mb-1 text-[11px]">
+              {isHi ? "हवा की दिशा:" : "Wind Direction:"}
             </label>
             <select
               value={windDirection}
               onChange={(e) => setWindDirection(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-slate-200 font-medium focus:ring-1 focus:ring-orange-500 focus:outline-none"
+              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-md p-2 text-slate-900 dark:text-slate-200 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             >
-              <option value="North-East (45°)">North-East (45°) — Spreading upslope toward ridge</option>
-              <option value="North-West (315°)">North-West (315°) — Spreading toward village buffer</option>
-              <option value="South-East (135°)">South-East (135°) — Descending valley ravine</option>
-              <option value="Calm (0°)">Calm — Localized ground smolder</option>
+              <option value="North-East">North-East (उत्तर-पूर्व) — Upslope Ridge</option>
+              <option value="North-West">North-West (उत्तर-पश्चिम) — Valley Ridge</option>
+              <option value="South-East">South-East (दक्षिण-पूर्व) — Road Buffer</option>
+              <option value="Calm">Calm (शांत) — Ground Litter</option>
             </select>
           </div>
 
           <div className="pt-2">
             <button
               onClick={handleCreate}
-              className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold p-3 rounded-xl shadow-lg shadow-orange-950/40 transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-xs"
+              className="w-full bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-medium p-2.5 rounded-md transition shadow-sm flex items-center justify-center gap-1.5 text-xs"
             >
-              <Flame className="w-4 h-4" />
-              <span>Deploy Incident to Live GIS Map</span>
+              <Flame className="w-3.5 h-3.5" />
+              <span>{isHi ? "मानचित्र पर मॉक ड्रिल जोड़ें" : "Deploy Drill to Map"}</span>
             </button>
           </div>
         </div>

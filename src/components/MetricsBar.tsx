@@ -1,77 +1,98 @@
 "use client";
 
 import React from "react";
-import { Flame, ShieldCheck, Wind, Satellite, Mountain } from "lucide-react";
+import { Flame, Users, Mountain, Satellite } from "lucide-react";
 
 interface MetricsBarProps {
   division: any;
   hotspots: any[];
+  lang: "en" | "hi";
 }
 
-export const MetricsBar: React.FC<MetricsBarProps> = ({ division, hotspots }) => {
+export const MetricsBar: React.FC<MetricsBarProps> = ({ division, hotspots, lang }) => {
+  const isHi = lang === "hi";
   const activeCount = hotspots.filter((h) => h.status === "active").length;
   const dispatchedCount = hotspots.filter((h) => h.status === "dispatched").length;
   const containedCount = hotspots.filter((h) => h.status === "contained" || h.status === "resolved").length;
-  const highRiskCount = hotspots.filter((h) => h.confidence === "high" || h.frp_mw > 20).length;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-      {/* Active Hotspots Metric */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 shadow-sm relative overflow-hidden">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-400">Active Division Hotspots</span>
-          <Flame className="w-4 h-4 text-red-500" />
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-4">
+      {/* Metric 1: Active Detections */}
+      <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-lg p-3 transition-colors">
+        <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-medium">
+            {isHi ? "सक्रिय वनाग्नि बिंदु" : "Active Hotspots"}
+          </span>
+          <Flame className="w-4 h-4 text-rose-600 dark:text-rose-500" />
         </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-black text-white">{activeCount}</span>
-          <span className="text-xs text-red-400 font-medium">{highRiskCount} High Risk</span>
+        <div className="mt-1.5 flex items-baseline gap-2">
+          <span className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            {activeCount}
+          </span>
+          <span className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
+            {activeCount > 0 ? (isHi ? "निगरानी जारी" : "Action Required") : (isHi ? "शून्य" : "Clear")}
+          </span>
         </div>
-        <div className="mt-1 text-[11px] text-slate-500">
-          {dispatchedCount} Dispatched • {containedCount} Contained
-        </div>
-      </div>
-
-      {/* Field Guards Patrol Metric */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-400">Beat Staff Deployed</span>
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-        </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-black text-white">{division?.beat_officers?.length || 4}</span>
-          <span className="text-xs text-emerald-400 font-medium">100% Ready</span>
-        </div>
-        <div className="mt-1 text-[11px] text-slate-500 truncate">
-          HQ: {division?.headquarters || "Uttarakhand"}
+        <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+          {dispatchedCount} {isHi ? "दल रवाना" : "dispatched"} • {containedCount} {isHi ? "नियंत्रित" : "contained"}
         </div>
       </div>
 
-      {/* Pine Needle (Pirul) Hazard & Fuel Load */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-400">Dominant Fuel Load</span>
-          <Mountain className="w-4 h-4 text-amber-500" />
+      {/* Metric 2: Deployed Beat Staff */}
+      <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-lg p-3 transition-colors">
+        <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-medium">
+            {isHi ? "तैनात वन कर्मी" : "Field Guards on Duty"}
+          </span>
+          <Users className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
         </div>
-        <div className="mt-2 flex items-baseline gap-1">
-          <span className="text-sm font-bold text-amber-300 truncate">Chir Pine (Pirul)</span>
+        <div className="mt-1.5 flex items-baseline gap-2">
+          <span className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+            {division?.beat_officers?.length || 4}
+          </span>
+          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+            {isHi ? "सक्रिय गश्त" : "On Patrol"}
+          </span>
         </div>
-        <div className="mt-1 text-[11px] text-slate-500">
-          Slope Hazard: 25°-35° Ridge
+        <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 truncate">
+          {division?.headquarters || "Uttarakhand"}
         </div>
       </div>
 
-      {/* Satellite Telemetry Pass */}
-      <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 shadow-sm">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-medium text-slate-400">Satellite Sensor Layer</span>
-          <Satellite className="w-4 h-4 text-sky-400" />
+      {/* Metric 3: Fuel Type & Elevation */}
+      <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-lg p-3 transition-colors">
+        <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-medium">
+            {isHi ? "ईंधन भार (पिरुल)" : "Fuel Hazard (Pine Litter)"}
+          </span>
+          <Mountain className="w-4 h-4 text-amber-600 dark:text-amber-500" />
         </div>
-        <div className="mt-2 flex items-baseline gap-1">
-          <span className="text-sm font-bold text-sky-300">VIIRS 375m / MODIS</span>
+        <div className="mt-1.5 flex items-baseline gap-1">
+          <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+            {isHi ? "चीड़ पिरुल (सूखा)" : "Chir Pine Needle Bed"}
+          </span>
         </div>
-        <div className="mt-1 text-[11px] text-emerald-400 flex items-center gap-1">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-ping" />
-          NRT Feed Connected
+        <div className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+          {isHi ? "ढलान: 20°-35° दक्षिण" : "Slope: 20°-35° South Ridge"}
+        </div>
+      </div>
+
+      {/* Metric 4: Satellite Pass Telemetry */}
+      <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-lg p-3 transition-colors">
+        <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+          <span className="text-[11px] font-medium">
+            {isHi ? "उपग्रह सेंसर स्थिति" : "Satellite Telemetry"}
+          </span>
+          <Satellite className="w-4 h-4 text-sky-600 dark:text-sky-500" />
+        </div>
+        <div className="mt-1.5 flex items-baseline gap-1.5">
+          <span className="text-sm font-semibold text-slate-900 dark:text-white">
+            VIIRS (375m) / MODIS
+          </span>
+        </div>
+        <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span>{isHi ? "नवीनतम फीड कनेक्टेड" : "Telemetry Active"}</span>
         </div>
       </div>
     </div>

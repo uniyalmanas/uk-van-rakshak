@@ -11,10 +11,7 @@ import {
   CheckCircle2, 
   Clock, 
   ExternalLink, 
-  AlertTriangle,
-  Radio,
-  Check,
-  Phone
+  Check
 } from "lucide-react";
 
 interface IncidentDrawerProps {
@@ -22,6 +19,7 @@ interface IncidentDrawerProps {
   division: any;
   onClose: () => void;
   onUpdateStatus: (id: string, newStatus: string, assignedGuard?: string) => void;
+  lang: "en" | "hi";
 }
 
 export const IncidentDrawer: React.FC<IncidentDrawerProps> = ({
@@ -29,7 +27,9 @@ export const IncidentDrawer: React.FC<IncidentDrawerProps> = ({
   division,
   onClose,
   onUpdateStatus,
+  lang,
 }) => {
+  const isHi = lang === "hi";
   const [selectedGuard, setSelectedGuard] = useState<string>(
     hotspot?.assigned_guard || division?.beat_officers?.[0]?.name || ""
   );
@@ -56,8 +56,8 @@ export const IncidentDrawer: React.FC<IncidentDrawerProps> = ({
       if (data.success) {
         setAlertSuccessMessage(
           data.delivered
-            ? "Live Telegram alert delivered to officer phone!"
-            : "Simulated dispatch alert sent to field guard!"
+            ? (isHi ? "टेलीग्राम संदेश गश्ती अधिकारी को भेज दिया गया!" : "Live Telegram alert sent to officer's phone!")
+            : (isHi ? "गश्ती दल को आपातकालीन संदेश प्रेषित (सिमुलेशन)" : "Field alert dispatched to beat officer (Simulated)")
         );
         onUpdateStatus(hotspot.id, "dispatched", selectedGuard);
       }
@@ -71,215 +71,233 @@ export const IncidentDrawer: React.FC<IncidentDrawerProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "active":
-        return <span className="bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5"><Flame className="w-3.5 h-3.5 animate-pulse" /> Active Fire</span>;
+        return (
+          <span className="bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
+            <Flame className="w-3 h-3" />
+            {isHi ? "सक्रिय" : "Active"}
+          </span>
+        );
       case "dispatched":
-        return <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Guard Dispatched</span>;
+        return (
+          <span className="bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900/60 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {isHi ? "दल रवाना" : "Dispatched"}
+          </span>
+        );
       case "contained":
-        return <span className="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> Under Control</span>;
+        return (
+          <span className="bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-900/60 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            {isHi ? "नियंत्रित" : "Contained"}
+          </span>
+        );
       case "resolved":
-        return <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5" /> Extinguished</span>;
+        return (
+          <span className="bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/60 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" />
+            {isHi ? "शांत / बुझाई गई" : "Extinguished"}
+          </span>
+        );
       default:
         return null;
     }
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 w-full max-w-md bg-[#0d1424] border-l border-slate-800 shadow-2xl z-[100] flex flex-col transition-transform duration-300 ease-in-out">
+    <div className="fixed inset-x-0 bottom-0 sm:inset-y-0 sm:right-0 sm:left-auto w-full sm:max-w-md max-h-[85vh] sm:max-h-full bg-white dark:bg-[#0f1521] border-t sm:border-t-0 sm:border-l border-slate-200 dark:border-slate-800 shadow-2xl z-[100] flex flex-col rounded-t-2xl sm:rounded-none transition-transform duration-200 ease-out">
       {/* Drawer Header */}
-      <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-red-500/20 border border-red-500/30 flex items-center justify-center">
-            <Flame className="w-4 h-4 text-red-400" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-white leading-none">
-              Incident {hotspot.id}
+      <div className="p-3.5 sm:p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/40 rounded-t-2xl sm:rounded-none">
+        <div>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
+              {isHi ? "वनाग्नि घटना विवरण" : "Incident Details"}
             </h2>
-            <p className="text-[11px] text-slate-400 mt-1">
-              Detected: {hotspot.detected_at}
-            </p>
+            {getStatusBadge(hotspot.status)}
           </div>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-mono">
+            {hotspot.id} • {hotspot.detected_at}
+          </p>
         </div>
-        <div className="flex items-center gap-2">
-          {getStatusBadge(hotspot.status)}
-          <button
-            onClick={onClose}
-            className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        <button
+          onClick={onClose}
+          className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
-      {/* Drawer Body Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {/* Satellite Telemetry Card */}
-        <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-3.5">
-          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Radio className="w-3.5 h-3.5 text-sky-400" />
-            Satellite Sensor Telemetry
-          </h3>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">Brightness Temp</span>
-              <span className="font-mono font-bold text-amber-400 text-sm">
-                {hotspot.brightness_kelvin} K
-              </span>
-            </div>
-            <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">Fire Radiative Power</span>
-              <span className="font-mono font-bold text-red-400 text-sm">
-                {hotspot.frp_mw} MW
-              </span>
-            </div>
-            <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">Confidence Level</span>
-              <span className="font-bold text-emerald-400 text-xs capitalize">
-                {hotspot.confidence} ({hotspot.confidence_percent}%)
-              </span>
-            </div>
-            <div className="bg-slate-950/60 p-2 rounded-lg border border-slate-800">
-              <span className="text-slate-400 block text-[10px]">Sensor Platform</span>
-              <span className="font-medium text-slate-300 text-xs">
-                {hotspot.satellite}
-              </span>
-            </div>
+      {/* Drawer Content */}
+      <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3.5 text-xs">
+        {/* Geographic Location & Telemetry Card */}
+        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 rounded-lg p-3">
+          <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            {isHi ? "भौगोलिक एवं उपग्रह माप" : "Location & Sensor Telemetry"}
           </div>
-        </div>
-
-        {/* Mountain Terrain & Spread Hazard */}
-        <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-3.5">
-          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Wind className="w-3.5 h-3.5 text-amber-400" />
-            Mountain Terrain & Spread Hazard
-          </h3>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Elevation & Slope:</span>
-              <span className="font-medium text-slate-200">
-                {hotspot.elevation_meters}m • {hotspot.slope_aspect}
-              </span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Forest Fuel Bed:</span>
-              <span className="font-medium text-amber-300">
-                {hotspot.fuel_type}
-              </span>
-            </div>
-            <div className="flex justify-between py-1 border-b border-slate-800/60">
-              <span className="text-slate-400">Wind Direction & Speed:</span>
-              <span className="font-medium text-sky-300">
-                {hotspot.wind_speed_kmh} km/h • {hotspot.wind_direction}
-              </span>
-            </div>
-            <div className="p-2 rounded bg-red-950/40 border border-red-900/40 text-red-300 text-[11px] font-medium flex items-start gap-1.5">
-              <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-              <span>{hotspot.spread_risk}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Closed-Loop Beat Officer Dispatch */}
-        <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-3.5">
-          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-            <Shield className="w-3.5 h-3.5 text-emerald-400" />
-            Field Officer Assignment & Dispatch
-          </h3>
-
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-2 text-[11.5px]">
             <div>
-              <label className="text-[11px] text-slate-400 block mb-1">
-                Assign Nearest Beat Guard / Van Karmi:
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                {isHi ? "प्रभाग / रेंज" : "Division / Range"}
+              </span>
+              <span className="font-medium text-slate-900 dark:text-slate-200">
+                {hotspot.range_name}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                {isHi ? "समीपस्थ बीट" : "Assigned Beat"}
+              </span>
+              <span className="font-medium text-slate-900 dark:text-slate-200">
+                {hotspot.nearest_beat}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                {isHi ? "ऊंचाई / ढलान" : "Elevation & Slope"}
+              </span>
+              <span className="font-medium text-slate-900 dark:text-slate-200">
+                {hotspot.elevation_meters}m • {hotspot.slope_aspect.split("(")[0]}
+              </span>
+            </div>
+            <div>
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px]">
+                {isHi ? "सेंसर तापमान" : "Brightness (FRP)"}
+              </span>
+              <span className="font-medium text-rose-600 dark:text-rose-400">
+                {hotspot.brightness_kelvin} K ({hotspot.frp_mw} MW)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Spread Hazard & Fuel Card */}
+        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 rounded-lg p-3">
+          <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center justify-between">
+            <span>{isHi ? "पहाड़ी प्रसार जोखिम विश्लेषण" : "Terrain & Spread Vector"}</span>
+            <Wind className="w-3.5 h-3.5 text-slate-400" />
+          </div>
+          <div className="space-y-1.5 text-[11.5px]">
+            <div className="flex justify-between">
+              <span className="text-slate-500 dark:text-slate-400">{isHi ? "ईंधन का प्रकार:" : "Fuel Type:"}</span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">{hotspot.fuel_type}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-500 dark:text-slate-400">{isHi ? "हवा की गति:" : "Wind Velocity:"}</span>
+              <span className="font-medium text-slate-800 dark:text-slate-200">
+                {hotspot.wind_speed_kmh} km/h ({hotspot.wind_direction})
+              </span>
+            </div>
+            <div className="p-2 rounded bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-rose-800 dark:text-rose-300 text-[11px]">
+              {hotspot.spread_risk}
+            </div>
+          </div>
+        </div>
+
+        {/* Field Guard Dispatch */}
+        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 rounded-lg p-3">
+          <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            {isHi ? "गश्ती दल प्रेषण" : "Field Guard Dispatch"}
+          </div>
+
+          <div className="space-y-2.5">
+            <div>
+              <label className="text-[10px] text-slate-500 dark:text-slate-400 block mb-1">
+                {isHi ? "उत्तरदायी वन रक्षक चुनें:" : "Select Duty Guard:"}
               </label>
               <select
                 value={selectedGuard}
                 onChange={(e) => setSelectedGuard(e.target.value)}
-                className="w-full bg-slate-950 text-xs font-medium text-slate-200 border border-slate-700 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                className="w-full bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 rounded-md p-2 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
               >
                 {division?.beat_officers?.map((officer: any) => (
                   <option key={officer.id} value={officer.name}>
-                    {officer.name} ({officer.beat} • {officer.status})
+                    {officer.name} ({officer.beat})
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Google Maps Direct Navigation Link */}
+            {/* Direct Google Maps Link */}
             <a
               href={`https://www.google.com/maps?q=${hotspot.latitude},${hotspot.longitude}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-1.5 text-xs text-sky-400 bg-sky-950/40 border border-sky-800/50 hover:bg-sky-900/40 p-2 rounded-lg transition"
+              className="w-full flex items-center justify-center gap-1.5 text-xs text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 p-2 rounded-md hover:bg-sky-100 dark:hover:bg-sky-900/30 transition"
             >
               <MapPin className="w-3.5 h-3.5" />
-              <span>Open Exact Coordinates in Google Maps ({hotspot.latitude.toFixed(4)}, {hotspot.longitude.toFixed(4)})</span>
-              <ExternalLink className="w-3 h-3 ml-1" />
+              <span>
+                {isHi ? "गूगल मैप्स नेविगेशन खोलें" : "Navigate via Google Maps"} ({hotspot.latitude.toFixed(3)}, {hotspot.longitude.toFixed(3)})
+              </span>
+              <ExternalLink className="w-3 h-3" />
             </a>
 
-            {/* Instant Push Alert Trigger Button */}
+            {/* Alert Dispatch Button */}
             <button
               onClick={handleDispatchTelegram}
               disabled={isSendingAlert}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-lg shadow-emerald-950/40 transition active:scale-95 disabled:opacity-50 cursor-pointer"
+              className="w-full flex items-center justify-center gap-1.5 bg-emerald-700 hover:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-medium py-2 px-3 rounded-md transition shadow-xs text-xs"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>{isSendingAlert ? "Dispatching Alert..." : "Dispatch Instant Mobile Alert"}</span>
+              <span>
+                {isSendingAlert
+                  ? (isHi ? "संदेश भेजा जा रहा है..." : "Sending Alert...")
+                  : (isHi ? "त्वरित मोबाइल अलर्ट प्रेषित करें" : "Send Instant Mobile Alert")}
+              </span>
             </button>
 
             {alertSuccessMessage && (
-              <div className="p-2 rounded bg-emerald-900/30 border border-emerald-700/50 text-emerald-300 text-xs flex items-center gap-1.5">
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <div className="p-2 rounded bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] flex items-center gap-1.5">
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>{alertSuccessMessage}</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* Incident Life-Cycle Status Progression */}
-        <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-3.5">
-          <h3 className="text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2.5">
-            Operational Lifecycle Status
-          </h3>
+        {/* Life-Cycle Status Buttons */}
+        <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 rounded-lg p-3">
+          <div className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            {isHi ? "घटना की अद्यतन स्थिति" : "Update Incident Status"}
+          </div>
           <div className="grid grid-cols-2 gap-2">
             <button
               onClick={() => onUpdateStatus(hotspot.id, "active")}
-              className={`text-xs font-semibold p-2 rounded-lg border transition ${
+              className={`p-1.5 rounded text-[11px] font-medium border transition ${
                 hotspot.status === "active"
-                  ? "bg-red-500/20 text-red-300 border-red-500/50"
-                  : "bg-slate-950/40 text-slate-400 border-slate-800 hover:border-slate-700"
+                  ? "bg-rose-100 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800"
+                  : "bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800"
               }`}
             >
-              🔥 Active Threat
+              {isHi ? "सक्रिय" : "Active Threat"}
             </button>
             <button
               onClick={() => onUpdateStatus(hotspot.id, "dispatched", selectedGuard)}
-              className={`text-xs font-semibold p-2 rounded-lg border transition ${
+              className={`p-1.5 rounded text-[11px] font-medium border transition ${
                 hotspot.status === "dispatched"
-                  ? "bg-amber-500/20 text-amber-300 border-amber-500/50"
-                  : "bg-slate-950/40 text-slate-400 border-slate-800 hover:border-slate-700"
+                  ? "bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800"
+                  : "bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800"
               }`}
             >
-              ⏳ Guard En Route
+              {isHi ? "गश्ती दल रवाना" : "En Route"}
             </button>
             <button
               onClick={() => onUpdateStatus(hotspot.id, "contained")}
-              className={`text-xs font-semibold p-2 rounded-lg border transition ${
+              className={`p-1.5 rounded text-[11px] font-medium border transition ${
                 hotspot.status === "contained"
-                  ? "bg-blue-500/20 text-blue-300 border-blue-500/50"
-                  : "bg-slate-950/40 text-slate-400 border-slate-800 hover:border-slate-700"
+                  ? "bg-sky-100 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300 border-sky-300 dark:border-sky-800"
+                  : "bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800"
               }`}
             >
-              🛡️ Fireline Created
+              {isHi ? "फायरलाइन सुरक्षित" : "Contained"}
             </button>
             <button
               onClick={() => onUpdateStatus(hotspot.id, "resolved")}
-              className={`text-xs font-semibold p-2 rounded-lg border transition ${
+              className={`p-1.5 rounded text-[11px] font-medium border transition ${
                 hotspot.status === "resolved"
-                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50"
-                  : "bg-slate-950/40 text-slate-400 border-slate-800 hover:border-slate-700"
+                  ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800"
+                  : "bg-white dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800"
               }`}
             >
-              ✅ Extinguished
+              {isHi ? "पूर्णतः शांत" : "Extinguished"}
             </button>
           </div>
         </div>
