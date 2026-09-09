@@ -7,19 +7,25 @@ import { Satellite, Layers, Maximize2, Minimize2 } from "lucide-react";
 interface MapComponentProps {
   division: any;
   hotspots: any[];
+  corridors?: any[];
+  shelters?: any[];
   selectedHotspot: any | null;
   onSelectHotspot: (hotspot: any) => void;
   theme: "light" | "dark";
   lang: "en" | "hi";
+  activeHazardFilter?: string;
 }
 
 export const MapComponent: React.FC<MapComponentProps> = ({
   division,
   hotspots,
+  corridors = [],
+  shelters = [],
   selectedHotspot,
   onSelectHotspot,
   theme,
   lang,
+  activeHazardFilter = "all",
 }) => {
   const isHi = lang === "hi";
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -28,6 +34,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   const geojsonLayerRef = useRef<L.GeoJSON | null>(null);
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const officersLayerRef = useRef<L.LayerGroup | null>(null);
+  const corridorsLayerRef = useRef<L.LayerGroup | null>(null);
+  const sheltersLayerRef = useRef<L.LayerGroup | null>(null);
 
   // Basemap Mode: "canopy" (Satellite imagery) or "vector" (clean street/topo GIS)
   const [basemapMode, setBasemapMode] = useState<"canopy" | "vector">("canopy");
@@ -77,6 +85,8 @@ export const MapComponent: React.FC<MapComponentProps> = ({
 
       markersLayerRef.current = L.layerGroup().addTo(map);
       officersLayerRef.current = L.layerGroup().addTo(map);
+      corridorsLayerRef.current = L.layerGroup().addTo(map);
+      sheltersLayerRef.current = L.layerGroup().addTo(map);
       mapInstanceRef.current = map;
     }
 
@@ -213,31 +223,112 @@ export const MapComponent: React.FC<MapComponentProps> = ({
     });
   }, [division, isHi]);
 
-  // Render Fire Hotspots
+  // Render Highway Corridors
+  useEffect(() => {
+    const corridorsLayer = corridorsLayerRef.current;
+    if (!corridorsLayer) return;
+
+    corridorsLayer.clearLayers();
+    corridors.forEach((c) => {
+      if (c.coordinates && c.coordinates.length > 1) {
+        const strokeColor =
+          c.status === "blocked" ? "#ef4444" : c.status === "caution" ? "#f59e0b" : "#10b981";
+        const poly = L.polyline(c.coordinates, {
+          color: strokeColor,
+          weight: 4.5,
+          opacity: 0.85,
+          dashArray: c.status === "blocked" ? "6, 6" : undefined,
+        });
+        poly.bindTooltip(
+          `<b>${c.name}</b><br/>Status: <b>${c.status.toUpperCase()}</b> (${c.active_blockages} blockages)`,
+          { sticky: true }
+        );
+        corridorsLayer.addLayer(poly);
+      }
+    });
+  }, [corridors]);
+
+  // Render Shelters & Safe Havens
+  useEffect(() => {
+    const sheltersLayer = sheltersLayerRef.current;
+    if (!sheltersLayer) return;
+
+    sheltersLayer.clearLayers();
+    shelters.forEach((s) => {
+      if (s.coords) {
+        const shelterIcon = L.divIcon({
+          className: "shelter-marker",
+          html: `
+            <div style="background:#0284c7;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.3);cursor:pointer;">
+              ⛺
+            </div>
+          `,
+          iconSize: [22, 22],
+          iconAnchor: [11, 11],
+        });
+        const m = L.marker(s.coords, { icon: shelterIcon });
+        m.bindPopup(`
+          <div style="font-family: -apple-system, sans-serif; font-size:12px; line-height:1.4; padding: 2px;">
+            <b style="color:#0284c7;">${s.name}</b><br/>
+            <span>Capacity: <b>${s.capacity} people</b></span><br/>
+            <span style="color:#64748b;font-size:10.5px;">${s.facilities?.join(" • ")}</span><br/>
+            <span style="font-weight:600;color:#0f172a;">Tel: ${s.contact}</span>
+          </div>
+        `);
+        sheltersLayer.addLayer(m);
+      }
+    });
+  }, [shelters]);
+
+  // Render Multi-Hazard Markers (Landslides, Cloudbursts, Fires, SOS)
   useEffect(() => {
     const markersLayer = markersLayerRef.current;
     if (!markersLayer) return;
 
     markersLayer.clearLayers();
 
-    hotspots.forEach((spot) => {
+    const filtered = hotspots.filter((spot) => {
+      if (activeHazardFilter === "all") return true;
+      if (spot.type) return spot.type === activeHazardFilter;
+      // Default to wildfire if type not set
+      return activeHazardFilter === "wildfire";
+    });
+
+    filtered.forEach((spot) => {
       const isSelected = selectedHotspot?.id === spot.id;
-      const isHighRisk = spot.confidence === "high" || spot.brightness_kelvin > 330;
+      const isCritical = spot.severity === "CRITICAL" || spot.severity_score >= 4 || spot.type === "sos";
 
+      let iconEmoji = "🔥";
       let bgColor = "#e11d48"; // rose-600
-      if (spot.status === "dispatched") bgColor = "#d97706"; // amber-600
-      if (spot.status === "contained") bgColor = "#0284c7"; // sky-600
-      if (spot.status === "resolved") bgColor = "#059669"; // emerald-600
 
-      const pulseClass = isHighRisk && spot.status === "active" ? "marker-pulse" : "";
+      if (spot.type === "landslide") {
+        iconEmoji = "🪨";
+        bgColor = spot.status === "cleared" ? "#059669" : spot.status === "in_progress" ? "#d97706" : "#e11d48";
+      } else if (spot.type === "cloudburst") {
+        iconEmoji = "🌧️";
+        bgColor = "#0284c7";
+      } else if (spot.type === "broken_road") {
+        iconEmoji = "🚧";
+        bgColor = "#f97316";
+      } else if (spot.type === "sos") {
+        iconEmoji = "🆘";
+        bgColor = "#dc2626";
+      } else {
+        iconEmoji = "🔥";
+        if (spot.status === "dispatched") bgColor = "#d97706";
+        if (spot.status === "contained") bgColor = "#0284c7";
+        if (spot.status === "resolved") bgColor = "#059669";
+      }
 
-      const fireIcon = L.divIcon({
-        className: "custom-clean-fire-marker",
+      const pulseClass = isCritical ? "marker-pulse" : "";
+
+      const hazardIcon = L.divIcon({
+        className: "custom-hazard-marker",
         html: `
           <div class="relative flex items-center justify-center cursor-pointer">
             <div class="${pulseClass}" style="
-              width: ${isSelected ? "28px" : "22px"}; 
-              height: ${isSelected ? "28px" : "22px"}; 
+              width: ${isSelected ? "30px" : "24px"}; 
+              height: ${isSelected ? "30px" : "24px"}; 
               border-radius: 50%; 
               background-color: ${bgColor};
               border: 2px solid #ffffff;
@@ -246,8 +337,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({
               display: flex;
               align-items: center;
               justify-content: center;
+              font-size: ${isSelected ? "14px" : "12px"};
             ">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background: #ffffff;"></div>
+              ${iconEmoji}
             </div>
             ${
               spot.is_simulation
@@ -256,31 +348,31 @@ export const MapComponent: React.FC<MapComponentProps> = ({
             }
           </div>
         `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
       });
 
-      const marker = L.marker([spot.latitude, spot.longitude], { icon: fireIcon });
+      const marker = L.marker([spot.latitude, spot.longitude], { icon: hazardIcon });
       marker.on("click", () => {
         onSelectHotspot(spot);
       });
 
       markersLayer.addLayer(marker);
 
-      // Spread Direction Vector Arrow
-      if (spot.status === "active" && spot.wind_speed_kmh) {
+      // Spread Direction Vector Arrow for fires
+      if (spot.type === "wildfire" && spot.status === "active" && spot.wind_speed_kmh) {
         const deltaLat =
           0.012 *
-          (spot.wind_direction.includes("North")
+          (spot.wind_direction?.includes("North")
             ? 1
-            : spot.wind_direction.includes("South")
+            : spot.wind_direction?.includes("South")
             ? -1
             : 0);
         const deltaLon =
           0.012 *
-          (spot.wind_direction.includes("East")
+          (spot.wind_direction?.includes("East")
             ? 1
-            : spot.wind_direction.includes("West")
+            : spot.wind_direction?.includes("West")
             ? -1
             : 0);
 
@@ -301,7 +393,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         }
       }
     });
-  }, [hotspots, selectedHotspot, onSelectHotspot]);
+  }, [hotspots, selectedHotspot, onSelectHotspot, activeHazardFilter]);
 
   return (
     <div
@@ -317,22 +409,22 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         className="w-full h-full z-10"
       />
 
-      {/* Top Left: NASA VIIRS & ISRO CartoDEM Telemetry Badge */}
+      {/* Top Left: Aapda-Sutra Telemetry Badge */}
       <div className="absolute top-3 left-3 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-emerald-500/40 dark:border-emerald-500/30 rounded-lg px-2.5 py-1.5 shadow-sm flex items-center gap-2 pointer-events-auto">
-        <span className="text-sm">🛰️</span>
+        <span className="text-sm">🏔️</span>
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="text-[10.5px] font-bold text-emerald-800 dark:text-emerald-400 leading-none">
+            <span className="text-[10.5px] font-bold text-slate-800 dark:text-slate-200 leading-none">
               {isHi
-                ? "नासा VIIRS (375m) • इसरो CartoDEM"
-                : "NASA VIIRS 375m • ISRO CartoDEM"}
+                ? "आपदा-सूत्र • चारधाम कॉरिडोर एवं बहु-आपदा नियंत्रण"
+                : "Aapda-Sutra • Char Dham Corridor & Disaster Grid"}
             </span>
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
           </div>
           <span className="text-[9.5px] text-slate-500 dark:text-slate-400 block leading-tight mt-0.5">
             {isHi
-              ? "लाइव NRT उपग्रह स्कैन • सर्वे ऑफ इंडिया (SOI) सीमा अनुरूप"
-              : "Live NRT Satellite Detection • Survey of India (SOI) Compliant"}
+              ? "गूगल मैप्स • नासा VIIRS (375m) • आपदा न्यूनीकरण सेल"
+              : "Google Maps Platform • NASA VIIRS 375m • SDRF / PWD"}
           </span>
         </div>
       </div>
@@ -390,28 +482,41 @@ export const MapComponent: React.FC<MapComponentProps> = ({
         </div>
       </div>
 
-      {/* Bottom Left: Clean Legend */}
-      <div className="absolute bottom-3 left-3 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 text-[11px] shadow-sm max-w-[210px] pointer-events-auto">
+      {/* Bottom Left: Clean Multi-Hazard Legend */}
+      <div className="absolute bottom-3 left-3 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 text-[11px] shadow-sm max-w-[240px] pointer-events-auto">
         <div className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
-          {isHi ? "संकेत विवरण" : "Legend"}
+          {isHi ? "आपदा संकेत विवरण" : "Hazard & Clearance Legend"}
         </div>
-        <div className="space-y-1 text-slate-700 dark:text-slate-300 text-[10.5px]">
+        <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-slate-700 dark:text-slate-300 text-[10.5px]">
           <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-rose-600 shrink-0" />
-            <span>{isHi ? "सक्रिय वनाग्नि" : "Active Hotspot"}</span>
+            <span>🪨</span>
+            <span>{isHi ? "भूस्खलन" : "Landslide"}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-amber-600 shrink-0" />
-            <span>{isHi ? "गश्ती दल रवाना" : "Guard Dispatched"}</span>
+            <span>🌧️</span>
+            <span>{isHi ? "बाढ़/अतिवृष्टि" : "Cloudburst"}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-emerald-600 shrink-0" />
-            <span>{isHi ? "नियंत्रित / शांत" : "Contained"}</span>
+            <span>🚧</span>
+            <span>{isHi ? "सड़क धंसाव" : "Road Sunk"}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="text-[11px] leading-none">🛡️</span>
-            <span>{isHi ? "वन कर्मी गश्ती बिंदु" : "Field Guard Patrol"}</span>
+            <span>🔥</span>
+            <span>{isHi ? "वनाग्नि" : "Wildfire"}</span>
           </div>
+          <div className="flex items-center gap-1.5">
+            <span>🆘</span>
+            <span>{isHi ? "संकट संदेश" : "SOS Beacon"}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span>⛺</span>
+            <span>{isHi ? "राहत शिविर" : "Shelter"}</span>
+          </div>
+        </div>
+        <div className="mt-2 pt-1.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[9.5px] text-slate-500">
+          <span className="flex items-center gap-1"><span className="w-2.5 h-1 bg-emerald-500 rounded-sm"></span> {isHi ? "खुला" : "Open"}</span>
+          <span className="flex items-center gap-1"><span className="w-2.5 h-1 bg-amber-500 rounded-sm"></span> {isHi ? "सावधानी" : "Caution"}</span>
+          <span className="flex items-center gap-1"><span className="w-2.5 h-1 bg-rose-500 rounded-sm"></span> {isHi ? "अवरुद्ध" : "Blocked"}</span>
         </div>
       </div>
     </div>

@@ -1,0 +1,306 @@
+{
+  "state": "Uttarakhand",
+  "command_center": "State Emergency Operation Centre (SEOC), Secretariat, Dehradun",
+  "emergency_helpline": "1070 / 112",
+  "corridors": [
+    {
+      "id": "nh-58",
+      "name": "NH-58: Rishikesh - Badrinath National Highway",
+      "pilgrimage": "Badrinath & Hemkund Sahib Corridor",
+      "length_km": 298,
+      "status": "caution",
+      "active_blockages": 1,
+      "cleared_today": 2,
+      "color": "#f59e0b",
+      "danger_zones": ["Totaghati", "Teen Dhara", "Sirobagarh", "Helang", "Lambagarh"],
+      "coordinates": [
+        [30.12, 78.32],
+        [30.15, 78.60],
+        [30.22, 78.78],
+        [30.28, 78.98],
+        [30.33, 79.22],
+        [30.56, 79.56],
+        [30.74, 79.49]
+      ]
+    },
+    {
+      "id": "nh-107",
+      "name": "NH-107: Rudraprayag - Kedarnath Highway",
+      "pilgrimage": "Kedarnath Dham Corridor",
+      "length_km": 76,
+      "status": "clear",
+      "active_blockages": 0,
+      "cleared_today": 1,
+      "color": "#10b981",
+      "danger_zones": ["Banswara", "Kund", "Kakragad", "Sonprayag Slide"],
+      "coordinates": [
+        [30.28, 78.98],
+        [30.38, 79.05],
+        [30.52, 79.08],
+        [30.63, 79.02],
+        [30.73, 79.06]
+      ]
+    },
+    {
+      "id": "nh-34",
+      "name": "NH-34: Rishikesh - Uttarkashi - Gangotri Highway",
+      "pilgrimage": "Gangotri Dham Corridor",
+      "length_km": 240,
+      "status": "clear",
+      "active_blockages": 0,
+      "cleared_today": 0,
+      "color": "#10b981",
+      "danger_zones": ["Nalupani", "Dharasu", "Helgugad", "Dharali"],
+      "coordinates": [
+        [30.12, 78.32],
+        [30.40, 78.30],
+        [30.72, 78.43],
+        [30.98, 78.70],
+        [31.00, 78.93]
+      ]
+    },
+    {
+      "id": "nh-134",
+      "name": "NH-134: Dharasu - Barkot - Yamunotri Highway",
+      "pilgrimage": "Yamunotri Dham Corridor",
+      "length_km": 115,
+      "status": "blocked",
+      "active_blockages": 1,
+      "cleared_today": 0,
+      "color": "#ef4444",
+      "danger_zones": ["Silkyara", "Ojhari", "Kalyani Slide", "Janki Chatti"],
+      "coordinates": [
+        [30.65, 78.32],
+        [30.81, 78.20],
+        [30.95, 78.38],
+        [30.99, 78.45]
+      ]
+    }
+  ],
+  "incidents": [
+    {
+      "id": "HAZ-2026-081",
+      "type": "landslide",
+      "title": "Massive Rockfall & Debris Blockage",
+      "title_hi": "विशाल भूस्खलन एवं सड़क अवरोध",
+      "location_name": "Sirobagarh Landslide Zone, NH-58",
+      "location_name_hi": "सिरोबगड़ भूस्खलन क्षेत्र, राष्ट्रीय राजमार्ग 58",
+      "corridor_id": "nh-58",
+      "district": "Rudraprayag / Pauri Border",
+      "latitude": 30.2520,
+      "longitude": 78.9140,
+      "elevation_m": 840,
+      "severity": "CRITICAL",
+      "severity_score": 4,
+      "status": "in_progress",
+      "reported_at": "Today, 14:15 IST",
+      "reported_by": "Citizen Crowdsource (Verified via Gemini AI)",
+      "road_status": "Single-Lane Traffic Allowed",
+      "road_status_hi": "एक तरफा यातायात सुचारू",
+      "ai_analysis": {
+        "confidence": 96,
+        "debris_volume_sqm": 450,
+        "machinery_deployed": ["JCB 3DX Excavator (PWD Srinagar)", "Hydraulic Breaker"],
+        "estimated_full_clearance_hours": 2.0,
+        "human_casualty_risk": "Low - Traffic halted safely 200m ahead",
+        "description": "Limestone and shale debris detachment from upper ridge. Heavy boulder in right carriage-way being broken by breaker."
+      },
+      "assigned_unit": "PWD Srinagar Fast Response Squad (Team Lead: Er. Rajesh Rawat)",
+      "assigned_phone": "+91-1346-252110",
+      "clearance_progress": 65,
+      "photos": ["/images/landslide_sirobagarh.jpg"]
+    },
+    {
+      "id": "HAZ-2026-082",
+      "type": "cloudburst",
+      "title": "Cloudburst & Flash Flood Flash Warning",
+      "title_hi": "बादल फटने की चेतावनी एवं जलस्तर वृद्धि",
+      "location_name": "Upper Mandakini Catchment (Near Madhyamaheshwar)",
+      "location_name_hi": "ऊपरी मंदाकिनी घाटी (मध्यमहेश्वर के समीप)",
+      "corridor_id": "nh-107",
+      "district": "Rudraprayag",
+      "latitude": 30.6380,
+      "longitude": 79.1950,
+      "elevation_m": 2450,
+      "severity": "HIGH",
+      "severity_score": 5,
+      "status": "dispatched",
+      "reported_at": "Today, 17:30 IST",
+      "reported_by": "NASA GPM & IMD Doppler Radar Cluster",
+      "road_status": "Riverbank Evacuation Active",
+      "road_status_hi": "नदी किनारे सुरक्षित स्थानों पर निकासी जारी",
+      "ai_analysis": {
+        "confidence": 92,
+        "rainfall_rate_mm_hr": 78.5,
+        "river_surge_predicted_cm": 180,
+        "danger_timeline": "Peak surge expected in Kund & Tilwara by 20:30 IST",
+        "machinery_deployed": ["SDRF High-Altitude Rescue Team 4", "Inflatable Rafts"],
+        "description": "Hyper-local cloudburst cell detected. Flash discharge into Madhyamaheshwar Ganga. Flood sirens activated downstream."
+      },
+      "assigned_unit": "SDRF Agastyamuni Post (Sub-Inspector Gambhir Singh)",
+      "assigned_phone": "+91-1364-256112",
+      "clearance_progress": 40,
+      "photos": []
+    },
+    {
+      "id": "HAZ-2026-083",
+      "type": "broken_road",
+      "title": "Highway Shoulder Subsidence & Crack",
+      "title_hi": "सड़क का धंसाव एवं दरार",
+      "location_name": "Near Ojhari, NH-134 (Yamunotri Route)",
+      "location_name_hi": "ओझरी के समीप, राष्ट्रीय राजमार्ग 134",
+      "corridor_id": "nh-134",
+      "district": "Uttarkashi",
+      "latitude": 30.8750,
+      "longitude": 78.3120,
+      "elevation_m": 1620,
+      "severity": "HIGH",
+      "severity_score": 4,
+      "status": "reported",
+      "reported_at": "Today, 18:45 IST",
+      "reported_by": "Local Van Panchayat Pradhan",
+      "road_status": "Heavy Vehicles Barred",
+      "road_status_hi": "भारी वाहनों का प्रवेश प्रतिबंधित",
+      "ai_analysis": {
+        "confidence": 89,
+        "crack_length_m": 35,
+        "machinery_deployed": ["Survey Team & Warning Barriers"],
+        "estimated_full_clearance_hours": 6.0,
+        "human_casualty_risk": "Moderate - Needs retaining wall reinforcement",
+        "description": "Hillside road edge dropped 40cm due to subsurface seepage. Single light vehicle convoy moving under police escort."
+      },
+      "assigned_unit": "BRO 36 BRTF / PWD Barkot",
+      "assigned_phone": "+91-1375-224215",
+      "clearance_progress": 20,
+      "photos": []
+    },
+    {
+      "id": "HAZ-2026-084",
+      "type": "sos",
+      "title": "Stranded Pilgrim Bus (Brake Failure & Landslide)",
+      "title_hi": "फंसी हुई तीर्थयात्री बस (आपातकालीन सहायता)",
+      "location_name": "Lambagarh Bypass, NH-58",
+      "location_name_hi": "लम्बागढ़ बाईपास, राष्ट्रीय राजमार्ग 58",
+      "corridor_id": "nh-58",
+      "district": "Chamoli",
+      "latitude": 30.6410,
+      "longitude": 79.5280,
+      "elevation_m": 1980,
+      "severity": "CRITICAL",
+      "severity_score": 5,
+      "status": "in_progress",
+      "reported_at": "Today, 19:10 IST",
+      "reported_by": "One-Tap SOS Mobile Beacon",
+      "road_status": "Ambulance & Recovery Vehicle Dispatched",
+      "road_status_hi": "एम्बुलेंस एवं बचाव दल रवाना",
+      "ai_analysis": {
+        "confidence": 98,
+        "people_stranded": 34,
+        "elderly_infants": 12,
+        "food_water_urgency": "Immediate assistance needed (low temperature 8°C)",
+        "machinery_deployed": ["SDRF Joshimath Quick Response Vehicle", "Medical Van"],
+        "description": "Travelers stranded between two debris points. Rain falling, elderly passengers shivering. First-aid team 15 mins away."
+      },
+      "assigned_unit": "SDRF Joshimath Rescue Squad (Inspector K. S. Negi)",
+      "assigned_phone": "+91-1389-222108",
+      "clearance_progress": 70,
+      "photos": []
+    },
+    {
+      "id": "HAZ-2026-085",
+      "type": "wildfire",
+      "title": "Chir Pine Forest Fire (Upslope Spread)",
+      "title_hi": "चीड़ वन में आग (पहाड़ी फैलाव)",
+      "location_name": "Binsar Sanctuary Outer Buffer, Almora",
+      "location_name_hi": "बिनसर अभयारण्य बाहरी क्षेत्र, अल्मोड़ा",
+      "corridor_id": "kumaon-state",
+      "district": "Almora",
+      "latitude": 29.6920,
+      "longitude": 79.7210,
+      "elevation_m": 2180,
+      "severity": "MODERATE",
+      "severity_score": 3,
+      "status": "contained",
+      "reported_at": "Today, 11:20 IST",
+      "reported_by": "NASA VIIRS S-NPP (375m) & Local Van Guard",
+      "road_status": "Fireline Counter-Burn Active",
+      "road_status_hi": "नियंत्रण रेखा बनाकर आग रोकी गई",
+      "ai_analysis": {
+        "confidence": 91,
+        "frp_mw": 14.5,
+        "fuel_bed": "Chir Pine Needle Bed (Pirul)",
+        "flame_height_m": 2.1,
+        "machinery_deployed": ["Range Water Tanker", "Beating Crew (14 Guards)"],
+        "description": "Ground surface fire controlled before entering dense Banjh Oak tree canopy."
+      },
+      "assigned_unit": "Almora North Range Fire Squad (RO Deepak Rawat)",
+      "assigned_phone": "+91-5962-230240",
+      "clearance_progress": 90,
+      "photos": []
+    }
+  ],
+  "machinery_and_resources": [
+    {
+      "id": "res-1",
+      "name": "Heavy Excavator JCB 3DX (Unit 01)",
+      "base": "PWD Base Camp, Srinagar Garhwal",
+      "driver": "Mohan Singh (+91 94120 44101)",
+      "status": "Deployed at Sirobagarh (NH-58)",
+      "current_coords": [30.2520, 78.9140]
+    },
+    {
+      "id": "res-2",
+      "name": "Heavy Wheel Loader & Rock Breaker",
+      "base": "BRO Camp, Joshimath",
+      "driver": "Gurpreet Singh (+91 94120 44102)",
+      "status": "Deployed at Lambagarh",
+      "current_coords": [30.6410, 79.5280]
+    },
+    {
+      "id": "res-3",
+      "name": "SDRF High-Altitude Quick Response Team",
+      "base": "SDRF Post, Agastyamuni",
+      "commander": "Inspector Gambhir Singh (+91 94120 44103)",
+      "status": "En route to Madhyamaheshwar Flood Warning",
+      "current_coords": [30.4050, 79.0320]
+    },
+    {
+      "id": "res-4",
+      "name": "Emergency Medical 108 Mountain 4x4 Ambulance",
+      "base": "District Hospital, Rudraprayag",
+      "paramedic": "Dr. Sunil Bhatt (+91 94120 44104)",
+      "status": "Standby at Tilwara Crossing",
+      "current_coords": [30.3380, 78.9950]
+    }
+  ],
+  "safe_havens_and_shelters": [
+    {
+      "name": "Srinagar Garhwal ITI Community Shelter",
+      "capacity": 600,
+      "facilities": ["Food Kitchen", "Medical First Aid", "Warm Bedding", "Generator Power"],
+      "coords": [30.2240, 78.7840],
+      "contact": "+91-1346-252101"
+    },
+    {
+      "name": "Rudraprayag GMVN Tourist Rest House",
+      "capacity": 350,
+      "facilities": ["Clean Water", "Beds", "Emergency Wi-Fi"],
+      "coords": [30.2850, 78.9810],
+      "contact": "+91-1364-233300"
+    },
+    {
+      "name": "Joshimath Army Cantonment Relief Ground",
+      "capacity": 1200,
+      "facilities": ["Field Hospital", "Hot Meals", "Satellite Phone Station"],
+      "coords": [30.5560, 79.5620],
+      "contact": "+91-1389-222120"
+    },
+    {
+      "name": "Barkot Polytechnic Disaster Relief Camp",
+      "capacity": 450,
+      "facilities": ["Dry Rations", "Blankets", "Medical Officer on Duty"],
+      "coords": [30.8120, 78.2080],
+      "contact": "+91-1375-224230"
+    }
+  ]
+}

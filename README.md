@@ -1,47 +1,53 @@
-# 🔥 UK Van-Rakshak | Hyper-Local Forest Fire Command Platform
+# 🏔️ Aapda-Sutra (आपदा-सूत्र) | Uttarakhand Multi-Hazard Command & Char Dham Road Clearance Platform
 
-> **A real-time, GIS-based forest fire detection, mountain spread prediction, and closed-loop dispatch command system built specifically for Uttarakhand Forest Department divisions.**
+> **A unified, real-time Himalayan disaster management and road clearance command system powered by Google Gemini AI and Google Maps Platform. Connecting stranded pilgrims, citizens, and SDRF/PWD officers on a single synchronized platform.**
 
 [![Live Production](https://img.shields.io/badge/Live%20Portal-uk--van--rakshak.vercel.app-emerald?style=flat-square&logo=vercel)](https://uk-van-rakshak.vercel.app)
-[![Satellite Detection](https://img.shields.io/badge/Detection-NASA%20VIIRS%20375m%20NRT-orange?style=flat-square&logo=nasa)](https://firms.modaps.eosdis.nasa.gov/)
-[![Topography](https://img.shields.io/badge/Terrain-ISRO%20CartoDEM%2030m-blue?style=flat-square)](https://bhuvan.nrsc.gov.in/)
-[![SOI Compliant](https://img.shields.io/badge/GIS-Survey%20of%20India%20Compliant-green?style=flat-square)](https://surveyofindia.gov.in/)
-[![Zero Cost Stack](https://img.shields.io/badge/Budget-%E2%82%B90%20Zero%20Cost%20Stack-success?style=flat-square)](https://github.com/uniyalmanas/uk-van-rakshak)
+[![Google Gemini AI](https://img.shields.io/badge/AI%20Vision-Google%20Gemini%202.5%20Flash-blue?style=flat-square&logo=google)](https://aistudio.google.com/)
+[![Google Maps](https://img.shields.io/badge/Routing-Google%20Maps%20Platform-green?style=flat-square&logo=googlemaps)](https://cloud.google.com/maps-platform)
+[![Satellite Telemetry](https://img.shields.io/badge/Telemetry-NASA%20VIIRS%20375m%20NRT-orange?style=flat-square&logo=nasa)](https://firms.modaps.eosdis.nasa.gov/)
+[![Android PWA](https://img.shields.io/badge/Mobile-Android%20Installable%20PWA-purple?style=flat-square&logo=android)](https://uk-van-rakshak.vercel.app)
 
-**Live Production Site:** [https://uk-van-rakshak.vercel.app](https://uk-van-rakshak.vercel.app)
+**Live Production Portal:** [https://uk-van-rakshak.vercel.app](https://uk-van-rakshak.vercel.app)
 
 ---
 
-## 🌟 Why This Beats Generic National Portals (FSI Van Agni / Bhuvan)
+## 🌟 What is Aapda-Sutra?
 
-National and state-level portals often send delayed, raw coordinates that overwhelm field staff. **UK Van-Rakshak** is built from the ground up as a division-level command tool:
+In the rugged Himalayas of Uttarakhand, disasters are multifaceted: **monsoon cloudbursts, sudden rockfalls, sinking roads, flash floods, winter avalanches, and summer wildfires**. When a major highway like **NH-58 (Badrinath)** or **NH-107 (Kedarnath)** is blocked, thousands of pilgrims and local villagers get stranded without real-time updates.
 
-1. **Hyper-Local Focus (Zero Clutter):** Clamped strictly to Uttarakhand boundaries (`28.4°N, 77.2°E` to `31.8°N, 81.3°E`). Pre-configured for:
-   - 🌐 **Entire Uttarakhand (Statewide Command)**
-   - 🌲 **Nainital Forest Division (Kumaon)**
-   - 🌲 **Almora Forest Division (Kumaon)**
-   - 🌲 **Dehradun Forest Division (Garhwal)**
-   - 🌲 **Pauri Garhwal Forest Division**
-   - 🐅 **Corbett Tiger Reserve Buffer Division**
-2. **Hybrid Satellite Architecture (NASA VIIRS + ISRO CartoDEM):**
-   - **Detection**: Real-time thermal anomaly ingestion from NASA VIIRS S-NPP (375m resolution).
-   - **Terrain Intelligence**: Mountain slope gradients and aspects calculated using ISRO's 30-meter CartoDEM.
-   - **Administrative GIS**: Official boundary shapefiles aligned with Survey of India (SOI) and ISRO Bhuvan standards.
-3. **Live Mountain Weather & Fire Weather Index (FWI):**
-   - Live elevation-adjusted meteorological feed (temperature, humidity, wind velocity & compass direction) via Open-Meteo.
-   - Automated flammability & Chir pine needle (*Pirul* / पिरुल) desiccation risk index.
-4. **Closed-Loop Dispatch Tracking:**
-   - Unlike one-way SMS alerts, tracks operational lifecycle from start to finish:
-     - 🔴 **Active Threat** ➔ 🟡 **Guard Dispatched** ➔ 🔵 **Perimeter Contained** ➔ 🟢 **Extinguished**
-5. **One-Tap GPS Field Navigation:**
-   - Generates instant Google Maps turn-by-turn walking and driving routes straight to the ridge coordinates for beat officers on mobile.
-6. **Bilingual & Responsive Command UI:**
-   - Instant English ⇄ Hindi (हिन्दी) toggle.
-   - High-contrast Dark / Light themes, Fullscreen map mode, and Esri Canopy / Vector GIS basemaps.
-7. **Simulate Drill Mode (मॉक ड्रिल):**
-   - Built-in disaster drill engine to test alerts, demonstrate response workflows, and conduct training even during the off-season.
-8. **Automated SitRep (Situation Report) Export:**
-   - One-click CSV export formatted for DFO morning briefing and official departmental logs.
+Existing departmental silos (PWD, SDRF, Police, Forest Dept, District Administration) operate on isolated radios or delayed PDFs. 
+
+**Aapda-Sutra bridges this gap by bringing citizens, pilgrims, and government response teams onto a single transparent dashboard:**
+
+1. 📸 **Google Gemini AI Multimodal Vision Hazard Triage:**
+   - Citizens and pilgrims take photos of road blockages, rockfalls, or floods.
+   - Google Gemini 2.5 Flash automatically assesses hazard severity (1-5), estimates cubic meters of debris, calculates clearance time, identifies required heavy machinery (JCB excavators, pneumatic rock breakers), and generates bilingual advisories.
+
+2. 🛣️ **Char Dham Corridor Real-Time Clearance Status:**
+   - Live status tracking of all four pilgrimage arteries:
+     - **NH-58**: Rishikesh - Badrinath (298 km)
+     - **NH-107**: Rudraprayag - Kedarnath (76 km)
+     - **NH-34**: Dharasu - Gangotri (124 km)
+     - **NH-134**: Dharasu - Yamunotri (85 km)
+   - Color-coded clearance indicators (Clear 🟢, Caution 🟡, Blocked 🔴).
+
+3. 🚜 **Closed-Loop Clearance Tracking ("Uber for JCBs"):**
+   - Tracks clearance progress (0% ➔ 100%) in real time.
+   - Deployed machinery cards display operator contacts (e.g. Gurpreet Singh on Wheel Loader, BRO Camp Joshimath).
+
+4. 🆘 **Emergency SOS Distress Beacon with Offline 2G SMS Fallback:**
+   - In deep valleys where 4G/5G drops to 0 or 1 bar of 2G, the emergency SOS beacon generates a compressed cellular SMS packet routed to **112 / 1070 State Emergency Control Rooms** containing exact GPS coordinates, headcount, and medical needs.
+
+5. 📑 **Gemini AI Situation Report (SitRep) Generator:**
+   - One-click synthesis of active incidents, blocked highways, and relief operations formatted for District Magistrates and WhatsApp broadcast.
+
+6. 🛡️ **Dual-Persona Architecture:**
+   - **Citizen & Pilgrim View**: Safe routes, nearest GMVN/shelter safe havens, photo report hazard, SOS beacon.
+   - **Officer Command Console**: SDRF/PWD machinery dispatch, clearance verification, SitRep export.
+
+7. 📱 **Android Installable App (PWA):**
+   - Progressive Web App with standalone viewport, home screen icon, and offline asset caching.
 
 ---
 
