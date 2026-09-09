@@ -1,0 +1,198 @@
+{
+  "divisions": [
+    {
+      "id": "nainital",
+      "name": "Nainital Forest Division",
+      "circle": "Kumaon Circle",
+      "headquarters": "Nainital, Uttarakhand",
+      "dfo": "Dr. V. K. Joshi, IFS",
+      "control_room_contact": "+91-5942-235841",
+      "total_area_sqkm": 948.5,
+      "fire_vulnerability": "Extreme (Chir Pine belt: 1200m - 2000m)",
+      "center": [29.3888, 79.4552],
+      "default_zoom": 11,
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "name": "Nainital Forest Division",
+          "color": "#10b981",
+          "density": "Dense Pine & Oak"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [79.3100, 29.3100],
+              [79.3500, 29.2800],
+              [79.4200, 29.2700],
+              [79.5200, 29.3000],
+              [79.5800, 29.3600],
+              [79.5900, 29.4500],
+              [79.5500, 29.5100],
+              [79.4600, 29.5300],
+              [79.3800, 29.5200],
+              [79.3200, 29.4700],
+              [79.2800, 29.4000],
+              [79.3100, 29.3100]
+            ]
+          ]
+        }
+      },
+      "ranges": [
+        { "id": "rng-1", "name": "Nainital Range", "officer": "D. S. Bisht (RO)", "phone": "+91-94120-XXXX1" },
+        { "id": "rng-2", "name": "Bhowali Range", "officer": "Kavita Arya (RO)", "phone": "+91-94120-XXXX2" },
+        { "id": "rng-3", "name": "Manora Peak Range", "officer": "R. C. Pandey (RO)", "phone": "+91-94120-XXXX3" },
+        { "id": "rng-4", "name": "Kaladhungi Sal Range", "officer": "Mohit Negi (RO)", "phone": "+91-94120-XXXX4" }
+      ],
+      "beat_officers": [
+        { "id": "beat-101", "name": "Ramesh Chandra (Forest Guard)", "beat": "Cheena Peak Beat", "range": "Nainital Range", "phone": "+91 98371 29482", "status": "On Patrol", "location": [29.4050, 79.4450] },
+        { "id": "beat-102", "name": "Pawan Kumar (Van Karmi)", "beat": "Kunjakharak Ridge Beat", "range": "Nainital Range", "phone": "+91 97582 48190", "status": "Available", "location": [29.4320, 79.3900] },
+        { "id": "beat-103", "name": "Sunder Singh (Forest Guard)", "beat": "Bhowali Pine Beat", "range": "Bhowali Range", "phone": "+91 94115 10293", "status": "On Patrol", "location": [29.3820, 79.5180] },
+        { "id": "beat-104", "name": "Hemant Tiwari (Watcher)", "beat": "Kaladhungi Foothill Beat", "range": "Kaladhungi Sal Range", "phone": "+91 98974 55102", "status": "Available", "location": [29.2890, 79.3510] }
+      ]
+    },
+    {
+      "id": "almora",
+      "name": "Almora Forest Division",
+      "circle": "Kumaon Circle",
+      "headquarters": "Almora, Uttarakhand",
+      "dfo": "Deepak Rawat, IFS",
+      "control_room_contact": "+91-5962-230240",
+      "total_area_sqkm": 1120.0,
+      "fire_vulnerability": "High (Dry Southern Slopes)",
+      "center": [29.6000, 79.6600],
+      "default_zoom": 11,
+      "geojson": {
+        "type": "Feature",
+        "properties": {
+          "name": "Almora Forest Division",
+          "color": "#3b82f6",
+          "density": "Chir Pine & Mixed Scrub"
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [79.5000, 29.5000],
+              [79.6200, 29.4800],
+              [79.7400, 29.5200],
+              [79.8000, 29.6200],
+              [79.7800, 29.7200],
+              [79.6800, 29.7600],
+              [79.5500, 29.7400],
+              [79.4800, 29.6500],
+              [79.5000, 29.5000]
+            ]
+          ]
+        }
+      },
+      "ranges": [
+        { "id": "alm-1", "name": "Almora North Range", "officer": "B. S. Khati (RO)", "phone": "+91-94120-XXXX5" },
+        { "id": "alm-2", "name": "Ranikhet Range", "officer": "Anita Joshi (RO)", "phone": "+91-94120-XXXX6" },
+        { "id": "alm-3", "name": "Binsar Sanctuary Buffer", "officer": "Mahesh Danu (RO)", "phone": "+91-94120-XXXX7" }
+      ],
+      "beat_officers": [
+        { "id": "beat-201", "name": "Dan Singh (Forest Guard)", "beat": "Kasar Devi Beat", "range": "Almora North Range", "phone": "+91 94123 77881", "status": "On Patrol", "location": [29.6300, 79.6700] },
+        { "id": "beat-202", "name": "Kailash Giri (Van Karmi)", "beat": "Chitai Ridge Beat", "range": "Almora North Range", "phone": "+91 94123 77882", "status": "Available", "location": [29.6050, 79.7020] }
+      ]
+    }
+  ],
+  "sample_satellite_hotspots": [
+    {
+      "id": "firms-uk-901",
+      "division_id": "nainital",
+      "latitude": 29.3952,
+      "longitude": 79.4421,
+      "brightness_kelvin": 338.4,
+      "confidence": "high",
+      "confidence_percent": 94,
+      "frp_mw": 28.6,
+      "satellite": "NOAA-20 (VIIRS 375m)",
+      "detected_at": "18 minutes ago",
+      "detected_timestamp": "2026-09-09T06:50:00Z",
+      "range_name": "Nainital Range",
+      "nearest_beat": "Cheena Peak Beat",
+      "elevation_meters": 2180,
+      "slope_aspect": "South-Facing (34° slope)",
+      "fuel_type": "Dense Chir Pine Needle Bed (Pirul)",
+      "wind_speed_kmh": 16,
+      "wind_direction": "North-East (42°)",
+      "spread_risk": "CRITICAL - Upslope spread toward Cheena ridge summit",
+      "status": "active",
+      "assigned_guard": "Ramesh Chandra (Cheena Peak Beat)",
+      "is_simulation": false
+    },
+    {
+      "id": "firms-uk-902",
+      "division_id": "nainital",
+      "latitude": 29.3780,
+      "longitude": 79.5120,
+      "brightness_kelvin": 315.2,
+      "confidence": "nominal",
+      "confidence_percent": 76,
+      "frp_mw": 11.3,
+      "satellite": "Suomi NPP (VIIRS 375m)",
+      "detected_at": "1 hour 12 mins ago",
+      "detected_timestamp": "2026-09-09T05:55:00Z",
+      "range_name": "Bhowali Range",
+      "nearest_beat": "Bhowali Pine Beat",
+      "elevation_meters": 1710,
+      "slope_aspect": "East-Facing (18° slope)",
+      "fuel_type": "Mixed Oak-Pine Scrub",
+      "wind_speed_kmh": 11,
+      "wind_direction": "East (95°)",
+      "spread_risk": "MODERATE - Surface fire along road buffer",
+      "status": "dispatched",
+      "assigned_guard": "Sunder Singh (Bhowali Pine Beat)",
+      "is_simulation": false
+    },
+    {
+      "id": "firms-uk-903",
+      "division_id": "nainital",
+      "latitude": 29.4310,
+      "longitude": 79.3950,
+      "brightness_kelvin": 302.8,
+      "confidence": "low",
+      "confidence_percent": 48,
+      "frp_mw": 4.2,
+      "satellite": "Aqua (MODIS 1km)",
+      "detected_at": "2 hours 40 mins ago",
+      "detected_timestamp": "2026-09-09T04:30:00Z",
+      "range_name": "Nainital Range",
+      "nearest_beat": "Kunjakharak Ridge Beat",
+      "elevation_meters": 2340,
+      "slope_aspect": "North-West (12° slope)",
+      "fuel_type": "Banj Oak Canopy",
+      "wind_speed_kmh": 7,
+      "wind_direction": "North (15°)",
+      "spread_risk": "LOW - Slow smoldering leaf litter, contained",
+      "status": "contained",
+      "assigned_guard": "Pawan Kumar (Kunjakharak Beat)",
+      "is_simulation": false
+    },
+    {
+      "id": "firms-uk-904",
+      "division_id": "almora",
+      "latitude": 29.6250,
+      "longitude": 79.6680,
+      "brightness_kelvin": 329.1,
+      "confidence": "high",
+      "confidence_percent": 88,
+      "frp_mw": 19.8,
+      "satellite": "NOAA-20 (VIIRS 375m)",
+      "detected_at": "45 minutes ago",
+      "detected_timestamp": "2026-09-09T06:20:00Z",
+      "range_name": "Almora North Range",
+      "nearest_beat": "Kasar Devi Beat",
+      "elevation_meters": 1820,
+      "slope_aspect": "South-West (28° slope)",
+      "fuel_type": "Dry Grass & Chir Pine",
+      "wind_speed_kmh": 14,
+      "wind_direction": "North-West (310°)",
+      "spread_risk": "HIGH - Heading toward temple ridge buffer zone",
+      "status": "active",
+      "assigned_guard": "Dan Singh (Kasar Devi Beat)",
+      "is_simulation": false
+    }
+  ]
+}
