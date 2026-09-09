@@ -7,9 +7,21 @@ interface MetricsBarProps {
   division: any;
   hotspots: any[];
   lang: "en" | "hi";
+  satelliteFeedInfo?: {
+    source: string;
+    isLive: boolean;
+    apiConnected: boolean;
+    liveCount: number;
+    message?: string;
+  };
 }
 
-export const MetricsBar: React.FC<MetricsBarProps> = ({ division, hotspots, lang }) => {
+export const MetricsBar: React.FC<MetricsBarProps> = ({
+  division,
+  hotspots,
+  lang,
+  satelliteFeedInfo,
+}) => {
   const isHi = lang === "hi";
   const activeCount = hotspots.filter((h) => h.status === "active").length;
   const dispatchedCount = hotspots.filter((h) => h.status === "dispatched").length;
@@ -77,22 +89,26 @@ export const MetricsBar: React.FC<MetricsBarProps> = ({ division, hotspots, lang
         </div>
       </div>
 
-      {/* Metric 4: ISRO Satellite Constellation Telemetry */}
+      {/* Metric 4: ISRO & NASA Satellite Constellation Telemetry */}
       <div className="bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-lg p-3 transition-colors">
         <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
           <span className="text-[11px] font-medium">
-            {isHi ? "इसरो उपग्रह टेलीमेट्री" : "ISRO Satellite Constellation"}
+            {isHi ? "इसरो एवं नासा उपग्रह" : "ISRO & NASA Constellation"}
           </span>
           <Satellite className="w-4 h-4 text-emerald-600 dark:text-emerald-500" />
         </div>
         <div className="mt-1.5 flex items-baseline gap-1.5">
           <span className="text-sm font-semibold text-slate-900 dark:text-white">
-            INSAT-3DR & Bhuvan
+            INSAT-3DR + VIIRS
           </span>
         </div>
         <div className="mt-1 text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
-          <span>{isHi ? "15 मिनट जियोस्टेशनरी स्कैन" : "15-min Rapid Scan (MOSDAC)"}</span>
+          <span className="truncate">
+            {satelliteFeedInfo?.isLive
+              ? (isHi ? "नासा FIRMS सक्रिय (लाइव फ़ीड)" : "NASA FIRMS Live Connected")
+              : (isHi ? "15 मिनट जियोस्टेशनरी स्कैन" : "15-min Rapid Scan (MOSDAC)")}
+          </span>
         </div>
       </div>
     </div>

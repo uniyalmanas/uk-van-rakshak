@@ -46,6 +46,20 @@ export default function Home() {
   const [isHelpOpen, setIsHelpOpen] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+
+  // Live NASA FIRMS Satellite Feed Status
+  const [satelliteFeedInfo, setSatelliteFeedInfo] = useState<{
+    source: string;
+    isLive: boolean;
+    apiConnected: boolean;
+    liveCount: number;
+    message?: string;
+  }>({
+    source: "NASA FIRMS",
+    isLive: false,
+    apiConnected: false,
+    liveCount: 0,
+  });
   
   // Clean Theme & Language states
   const [theme, setTheme] = useState<"light" | "dark">("dark");
@@ -89,13 +103,20 @@ export default function Home() {
     return h.status === filterStatus;
   });
 
-  // Sync with NASA FIRMS API
-  const handleRefresh = async () => {
+  // Sync with NASA FIRMS Live Satellite API
+  const syncSatelliteFeed = async () => {
     setIsRefreshing(true);
     try {
-      const res = await fetch(`/api/firms?division=${selectedDivisionId}`);
+      const res = await fetch(`/api/firms?division=all_uk&days=3`);
       if (res.ok) {
         const data = await res.json();
+        setSatelliteFeedInfo({
+          source: data.source || "NASA FIRMS",
+          isLive: Boolean(data.is_live),
+          apiConnected: Boolean(data.api_connected),
+          liveCount: data.live_count ?? 0,
+          message: data.message,
+        });
         if (data.hotspots && data.hotspots.length > 0) {
           setHotspots((prev) => {
             const simulations = prev.filter((p) => p.is_simulation);
@@ -104,10 +125,19 @@ export default function Home() {
         }
       }
     } catch (e) {
-      console.error("Refresh error", e);
+      console.error("NASA FIRMS satellite feed sync error:", e);
     } finally {
       setTimeout(() => setIsRefreshing(false), 500);
     }
+  };
+
+  // Sync on initial mount
+  useEffect(() => {
+    syncSatelliteFeed();
+  }, []);
+
+  const handleRefresh = async () => {
+    await syncSatelliteFeed();
   };
 
   const handleUpdateStatus = (
@@ -188,11 +218,30 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-5 lg:p-6 flex flex-col">
+        {/* Live Satellite Sync Status Banner */}
+        {satelliteFeedInfo.isLive && (
+          <div className="mb-3 px-3 py-2 rounded-lg text-xs flex items-center justify-between border bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800/80 text-emerald-900 dark:text-emerald-300 shadow-xs">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span className="font-semibold">
+                {isHi ? "नासा FIRMS उपग्रह लिंक सक्रिय:" : "NASA FIRMS Satellite Feed Active:"}
+              </span>
+              <span className="text-emerald-700 dark:text-emerald-400 font-medium">
+                {satelliteFeedInfo.message || (isHi ? "लाइव उपग्रह डेटा सिंक हो चुका है" : "Live VIIRS 375m feed connected")}
+              </span>
+            </div>
+            <span className="hidden sm:inline-block text-[10px] tracking-wider font-semibold uppercase px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300">
+              VIIRS 375m NRT
+            </span>
+          </div>
+        )}
+
         {/* Executive Metrics Bar */}
         <MetricsBar
           division={currentDivision}
           hotspots={divisionHotspots}
           lang={lang}
+          satelliteFeedInfo={satelliteFeedInfo}
         />
 
         {/* Live Mountain Weather & Fire Weather Index (Open-Meteo) */}
